@@ -1,0 +1,54 @@
+{
+  "common": {
+    "search": "Search...",
+    "categories": "Categories",
+    "allCategories": "All Categories",
+    "signUp": "Sign Up",
+    "login": "Login",
+    "profile": "Profile",
+    "logout": "Logout",
+    "home": "Home",
+    "listings": "Listings",
+    "price": "Price",
+    "location": "Location",
+    "description": "Description",
+    "contact": "Contact",
+    "details": "Details",
+    "back": "Back"
+  },
+  "homepage": {
+    "title": "Find everything you're looking for",
+    "subtitle": "Discover thousands of listings near you",
+    "searchPlaceholder": "What are you looking for?",
+    "featuredListings": "Featured Listings",
+    "noListings": "No listings found",
+    "recentListings": "Recent Listings"
+  },
+  "listing": {
+    "title": "Listing",
+    "postedBy": "Posted by",
+    "postedOn": "Posted on",
+    "contactSeller": "Contact Seller",
+    "reportListing": "Report Listing",
+    "shareButton": "Share",
+    "saveButton": "Save",
+    "similarListings": "Similar Listings"
+  },
+  "profile": {
+    "title": "My Profile",
+    "myListings": "My Listings",
+    "savedListings": "Saved Listings",
+    "accountSettings": "Account Settings",
+    "createListing": "Create Listing"
+  },
+  "auth": {
+    "welcomeBack": "Welcome back",
+    "createAccount": "Create Account",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?"
+  }
+}

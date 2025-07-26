@@ -1,0 +1,54 @@
+{
+  "common": {
+    "search": "Suchen...",
+    "categories": "Kategorien",
+    "allCategories": "Alle Kategorien",
+    "signUp": "Registrieren",
+    "login": "Anmelden",
+    "profile": "Profil",
+    "logout": "Abmelden",
+    "home": "Startseite",
+    "listings": "Anzeigen",
+    "price": "Preis",
+    "location": "Standort",
+    "description": "Beschreibung",
+    "contact": "Kontakt",
+    "details": "Details",
+    "back": "Zurück"
+  },
+  "homepage": {
+    "title": "Finde alles was du suchst",
+    "subtitle": "Entdecke tausende von Anzeigen in deiner Nähe",
+    "searchPlaceholder": "Was suchst du?",
+    "featuredListings": "Empfohlene Anzeigen",
+    "noListings": "Keine Anzeigen gefunden",
+    "recentListings": "Neueste Anzeigen"
+  },
+  "listing": {
+    "title": "Anzeige",
+    "postedBy": "Inseriert von",
+    "postedOn": "Inseriert am",
+    "contactSeller": "Verkäufer kontaktieren",
+    "reportListing": "Anzeige melden",
+    "shareButton": "Teilen",
+    "saveButton": "Speichern",
+    "similarListings": "Ähnliche Anzeigen"
+  },
+  "profile": {
+    "title": "Mein Profil",
+    "myListings": "Meine Anzeigen",
+    "savedListings": "Gespeicherte Anzeigen",
+    "accountSettings": "Kontoeinstellungen",
+    "createListing": "Anzeige erstellen"
+  },
+  "auth": {
+    "welcomeBack": "Willkommen zurück",
+    "createAccount": "Konto erstellen",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Bereits ein Konto?"
+  }
+}

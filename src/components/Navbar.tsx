@@ -1,0 +1,165 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { Search, ChevronDown, User, Menu, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { categories } from '@/data/categories';
+
+export const Navbar = () => {
+  const { t, i18n } = useTranslation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const currentLanguage = i18n.language.startsWith('de') ? 'de' : 'en';
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: Implement search functionality
+    console.log('Search query:', searchQuery);
+  };
+
+  return (
+    <nav className="bg-background border-b-2 border-black font-public">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center">
+            <div className="w-10 h-10 bg-sage border-2 border-black shadow-brutalist rounded-sm flex items-center justify-center">
+              <span className="text-xl font-black">F</span>
+            </div>
+            <span className="ml-3 text-xl font-black hidden sm:block">filipeandrade.com</span>
+          </Link>
+
+          {/* Desktop Search Bar */}
+          <div className="hidden lg:flex items-center flex-1 max-w-lg mx-8">
+            <form onSubmit={handleSearch} className="flex w-full">
+              <Input
+                type="text"
+                placeholder={t('common.search')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="rounded-r-none border-r-0 bg-background border-2 border-black shadow-brutalist h-12"
+              />
+              <Button 
+                type="submit" 
+                variant="bright" 
+                size="icon" 
+                className="rounded-l-none"
+              >
+                <Search className="h-5 w-5" />
+              </Button>
+            </form>
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-4">
+            {/* Categories Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="bg-background">
+                  {t('common.categories')}
+                  <ChevronDown className="h-4 w-4 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto bg-background border-2 border-black shadow-brutalist rounded-sm">
+                <DropdownMenuItem className="font-bold border-b border-black">
+                  {t('common.allCategories')}
+                </DropdownMenuItem>
+                {categories.map((category) => (
+                  <DropdownMenuItem key={category.id} className="hover:bg-mint">
+                    <Link 
+                      to={`/category/${category.id}`} 
+                      className="w-full flex items-center py-2"
+                    >
+                      {category.name[currentLanguage]}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Account Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="bg-background">
+                  <User className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-background border-2 border-black shadow-brutalist rounded-sm">
+                <DropdownMenuItem>
+                  <Link to="/login">{t('common.login')}</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link to="/signup">{t('common.signUp')}</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link to="/profile">{t('common.profile')}</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="lg:hidden">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="bg-background"
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
+        </div>
+
+        {/* Mobile Search Bar */}
+        <div className="lg:hidden pb-4">
+          <form onSubmit={handleSearch} className="flex">
+            <Input
+              type="text"
+              placeholder={t('common.search')}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="rounded-r-none border-r-0 bg-background border-2 border-black shadow-brutalist h-12"
+            />
+            <Button 
+              type="submit" 
+              variant="bright" 
+              size="icon" 
+              className="rounded-l-none"
+            >
+              <Search className="h-5 w-5" />
+            </Button>
+          </form>
+        </div>
+
+        {/* Mobile menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden border-t-2 border-black py-4">
+            <div className="space-y-2">
+              <Button variant="ghost" className="w-full justify-start bg-background">
+                {t('common.categories')}
+              </Button>
+              <Button variant="ghost" className="w-full justify-start bg-background">
+                <Link to="/login">{t('common.login')}</Link>
+              </Button>
+              <Button variant="ghost" className="w-full justify-start bg-background">
+                <Link to="/signup">{t('common.signUp')}</Link>
+              </Button>
+              <Button variant="ghost" className="w-full justify-start bg-background">
+                <Link to="/profile">{t('common.profile')}</Link>
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+    </nav>
+  );
+};

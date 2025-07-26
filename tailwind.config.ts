@@ -18,6 +18,11 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'lexend': ['Lexend Mega', 'sans-serif'],
+				'public': ['Public Sans', 'sans-serif'],
+				'archivo': ['Archivo Black', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -61,12 +66,29 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Pastel neo-brutalist palette
+				mint: 'hsl(var(--mint))',
+				sage: 'hsl(var(--sage))',
+				cream: 'hsl(var(--cream))',
+				peach: 'hsl(var(--peach))',
+				lavender: 'hsl(var(--lavender))',
+				purple: 'hsl(var(--purple))',
+				aqua: 'hsl(var(--aqua))',
+				lime: 'hsl(var(--lime))',
+				yellow: 'hsl(var(--yellow))',
+				coral: 'hsl(var(--coral))',
+				pink: 'hsl(var(--pink))',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			boxShadow: {
+				'brutalist': '4px 4px 0px 0px #000000',
+				'brutalist-lg': '6px 6px 0px 0px #000000',
+				'brutalist-xl': '8px 8px 0px 0px #000000',
 			},
 			keyframes: {
 				'accordion-down': {
