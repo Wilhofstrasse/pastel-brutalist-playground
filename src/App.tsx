@@ -8,6 +8,8 @@ import { ListingDetail } from "./pages/ListingDetail";
 import { Profile } from "./pages/Profile";
 import { Login } from "./pages/Login";
 import { CreateListing } from "./pages/CreateListing";
+import { Category } from "./pages/Category";
+import { Search } from "./pages/Search";
 import NotFound from "./pages/NotFound";
 import { Navbar } from "./components/Navbar";
 import "./i18n";
@@ -25,6 +27,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/listing/:id" element={<ListingDetail />} />
+            <Route path="/category/:categoryId" element={<Category />} />
+            <Route path="/search" element={<Search />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/create-listing" element={<CreateListing />} />

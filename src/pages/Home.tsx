@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ListingCard } from '@/components/ListingCard';
 import { categories } from '@/data/categories';
@@ -8,6 +9,7 @@ import heroImage from '@/assets/marketplace-hero.jpg';
 
 export const Home = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const currentLanguage = i18n.language.startsWith('de') ? 'de' : 'en';
   
   const { data: listingsData, isLoading } = useQuery({
@@ -31,10 +33,20 @@ export const Home = () => {
                 {t('homepage.subtitle')}
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button variant="bright" size="lg" className="font-bold">
+                <Button 
+                  variant="bright" 
+                  size="lg" 
+                  className="font-bold"
+                  onClick={() => navigate('/create-listing')}
+                >
                   Anzeige erstellen
                 </Button>
-                <Button variant="outline" size="lg" className="font-bold">
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="font-bold"
+                  onClick={() => document.getElementById('categories-section')?.scrollIntoView({ behavior: 'smooth' })}
+                >
                   Kategorien entdecken
                 </Button>
               </div>
@@ -51,12 +63,12 @@ export const Home = () => {
       </section>
 
       {/* Categories Section */}
-      <section className="py-16 bg-background">
+      <section id="categories-section" className="py-16 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-black text-foreground mb-8 font-lexend">
             {t('common.categories')}
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {categories.slice(0, 14).map((category, index) => {
               const colors = [
                 'bg-sage', 'bg-cream', 'bg-peach', 'bg-lavender', 
@@ -68,10 +80,11 @@ export const Home = () => {
                 <Button
                   key={category.id}
                   variant="ghost"
-                  className={`${bgColor} border-2 border-black shadow-brutalist hover:translate-x-1 hover:translate-y-1 hover:shadow-none h-auto p-4 flex-col space-y-2`}
+                  onClick={() => navigate(`/category/${category.id}`)}
+                  className={`${bgColor} border-2 border-black shadow-brutalist hover:translate-x-1 hover:translate-y-1 hover:shadow-none h-auto p-4 flex-col space-y-2 min-h-[100px]`}
                 >
                   <div className="text-2xl">📦</div>
-                  <span className="text-xs font-bold text-center leading-tight">
+                  <span className="text-xs font-bold text-center leading-tight break-words">
                     {category.name[currentLanguage]}
                   </span>
                 </Button>
@@ -88,7 +101,11 @@ export const Home = () => {
             <h2 className="text-3xl font-black text-foreground font-lexend">
               {t('homepage.featuredListings')}
             </h2>
-            <Button variant="outline" className="font-bold">
+            <Button 
+              variant="outline" 
+              className="font-bold"
+              onClick={() => navigate('/search')}
+            >
               Alle anzeigen
             </Button>
           </div>
