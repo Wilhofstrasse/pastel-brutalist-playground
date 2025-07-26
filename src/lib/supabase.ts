@@ -3,11 +3,37 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables. Please ensure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set.');
-}
+// Create a mock client when Supabase variables aren't available yet
+const createMockClient = () => ({
+  auth: {
+    getSession: () => Promise.resolve({ data: { session: null } }),
+    getUser: () => Promise.resolve({ data: { user: null } }),
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+    signInWithPassword: () => Promise.resolve({ data: null, error: new Error('Supabase not configured yet') }),
+    signUp: () => Promise.resolve({ data: null, error: new Error('Supabase not configured yet') }),
+    signOut: () => Promise.resolve({ error: null })
+  },
+  from: () => ({
+    select: () => Promise.resolve({ data: [], error: null }),
+    insert: () => Promise.resolve({ data: null, error: new Error('Supabase not configured yet') }),
+    update: () => Promise.resolve({ data: null, error: new Error('Supabase not configured yet') }),
+    delete: () => Promise.resolve({ error: new Error('Supabase not configured yet') }),
+    eq: function() { return this; },
+    order: function() { return this; },
+    single: function() { return this; }
+  }),
+  storage: {
+    from: () => ({
+      upload: () => Promise.resolve({ data: null, error: new Error('Supabase not configured yet') }),
+      getPublicUrl: () => ({ data: { publicUrl: '' } })
+    })
+  }
+});
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Export the client - either real or mock
+export const supabase = (!supabaseUrl || !supabaseAnonKey) 
+  ? createMockClient() as any
+  : createClient(supabaseUrl, supabaseAnonKey);
 
 // Database types
 export interface Profile {
