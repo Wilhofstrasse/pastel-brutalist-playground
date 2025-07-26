@@ -1,102 +1,19 @@
-// Temporary working version without Supabase dependency
-export const supabase = null;
+import { createClient } from '@supabase/supabase-js';
 
-// Mock auth functions that work immediately
-export const signUp = async (email: string, password: string, fullName: string) => {
-  // Store user in localStorage for demo
-  const user = {
-    id: Math.random().toString(36),
-    email,
-    user_metadata: { full_name: fullName },
-    created_at: new Date().toISOString()
-  };
-  localStorage.setItem('demo_user', JSON.stringify(user));
-  return { data: { user }, error: null };
-};
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const signIn = async (email: string, password: string) => {
-  // Simple demo login
-  const user = {
-    id: Math.random().toString(36),
-    email,
-    user_metadata: { full_name: email.split('@')[0] },
-    created_at: new Date().toISOString()
-  };
-  localStorage.setItem('demo_user', JSON.stringify(user));
-  return { data: { user }, error: null };
-};
+console.log('Supabase URL:', supabaseUrl);
+console.log('Supabase Key exists:', !!supabaseAnonKey);
 
-export const signOut = async () => {
-  localStorage.removeItem('demo_user');
-  return { error: null };
-};
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Supabase environment variables missing');
+  throw new Error('Supabase configuration is missing. Please check your environment variables.');
+}
 
-export const getCurrentUser = async () => {
-  const stored = localStorage.getItem('demo_user');
-  return stored ? JSON.parse(stored) : null;
-};
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Mock data functions
-export const getListings = async () => {
-  const mockListings = [
-    {
-      id: '1',
-      title: 'iPhone 15 Pro Max - Like New',
-      description: 'Excellent condition iPhone 15 Pro Max',
-      price: 1200,
-      currency: 'CHF',
-      location: 'Zürich',
-      category_id: '1',
-      image_urls: ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=300&fit=crop'],
-      user_id: '1',
-      status: 'active' as const,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      categories: { id: '1', name_en: 'Electronics', name_de: 'Elektronik', name: 'Electronics', icon: '📱', created_at: new Date().toISOString() }
-    },
-    {
-      id: '2',
-      title: 'MacBook Pro 16" M3',
-      description: 'Perfect for professional work',
-      price: 2800,
-      currency: 'CHF',
-      location: 'Basel',
-      category_id: '1',
-      image_urls: ['https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'],
-      user_id: '1',
-      status: 'active' as const,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      categories: { id: '1', name_en: 'Electronics', name_de: 'Elektronik', name: 'Electronics', icon: '💻', created_at: new Date().toISOString() }
-    }
-  ];
-  return { data: mockListings, error: null };
-};
-
-export const getUserListings = async (userId: string) => {
-  return { data: [], error: null };
-};
-
-export const getSavedListings = async (userId: string) => {
-  return { data: [], error: null };
-};
-
-export const createListing = async (listing: any) => {
-  return { data: { id: Math.random().toString(36), ...listing }, error: null };
-};
-
-// Placeholder functions
-export const getListing = async (id: string) => ({ data: null, error: null });
-export const updateListing = async (id: string, updates: any) => ({ data: null, error: null });
-export const deleteListing = async (id: string) => ({ error: null });
-export const saveListing = async (listingId: string) => ({ data: null, error: null });
-export const unsaveListing = async (listingId: string) => ({ error: null });
-export const getCategories = async () => ({ data: [], error: null });
-export const getProfile = async (userId: string) => ({ data: null, error: null });
-export const updateProfile = async (userId: string, updates: any) => ({ data: null, error: null });
-export const uploadImage = async (file: File) => ({ data: { publicUrl: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop' }, error: null });
-
-// Types for compatibility
+// Database types
 export interface Profile {
   id: string;
   email: string;
@@ -139,3 +56,222 @@ export interface SavedListing {
   created_at: string;
   listings?: Listing;
 }
+
+// Auth functions
+export const signUp = async (email: string, password: string, fullName: string) => {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: fullName,
+      }
+    }
+  });
+  return { data, error };
+};
+
+export const signIn = async (email: string, password: string) => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  return { data, error };
+};
+
+export const signOut = async () => {
+  const { error } = await supabase.auth.signOut();
+  return { error };
+};
+
+export const getCurrentUser = async () => {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+};
+
+// Listing functions
+export const getListings = async (categoryId?: string) => {
+  let query = supabase
+    .from('listings')
+    .select(`
+      *,
+      profiles (id, full_name, avatar_url),
+      categories (id, name, name_de, name_en, icon)
+    `)
+    .eq('status', 'active')
+    .order('created_at', { ascending: false });
+
+  if (categoryId) {
+    query = query.eq('category_id', categoryId);
+  }
+
+  const { data, error } = await query;
+  return { data, error };
+};
+
+export const getListing = async (id: string) => {
+  const { data, error } = await supabase
+    .from('listings')
+    .select(`
+      *,
+      profiles (id, full_name, avatar_url, email),
+      categories (id, name, name_de, name_en, icon)
+    `)
+    .eq('id', id)
+    .single();
+
+  return { data, error };
+};
+
+export const createListing = async (listing: Omit<Listing, 'id' | 'created_at' | 'updated_at' | 'user_id'>) => {
+  const user = await getCurrentUser();
+  if (!user) throw new Error('User not authenticated');
+
+  const { data, error } = await supabase
+    .from('listings')
+    .insert({
+      title: listing.title,
+      description: listing.description,
+      price: listing.price,
+      currency: listing.currency,
+      location: listing.location,
+      category_id: listing.category_id,
+      image_urls: listing.image_urls,
+      status: listing.status,
+      user_id: user.id
+    })
+    .select()
+    .single();
+
+  return { data, error };
+};
+
+export const updateListing = async (id: string, updates: Partial<Listing>) => {
+  const { data, error } = await supabase
+    .from('listings')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  return { data, error };
+};
+
+export const deleteListing = async (id: string) => {
+  const { error } = await supabase
+    .from('listings')
+    .delete()
+    .eq('id', id);
+
+  return { error };
+};
+
+export const getUserListings = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('listings')
+    .select(`
+      *,
+      categories (id, name, name_de, name_en, icon)
+    `)
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  return { data, error };
+};
+
+// Saved listings functions
+export const getSavedListings = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('saved_listings')
+    .select(`
+      *,
+      listings (
+        *,
+        profiles (id, full_name, avatar_url),
+        categories (id, name, name_de, name_en, icon)
+      )
+    `)
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  return { data, error };
+};
+
+export const saveListing = async (listingId: string) => {
+  const user = await getCurrentUser();
+  if (!user) throw new Error('User not authenticated');
+
+  const { data, error } = await supabase
+    .from('saved_listings')
+    .insert({
+      user_id: user.id,
+      listing_id: listingId
+    })
+    .select()
+    .single();
+
+  return { data, error };
+};
+
+export const unsaveListing = async (listingId: string) => {
+  const user = await getCurrentUser();
+  if (!user) throw new Error('User not authenticated');
+
+  const { error } = await supabase
+    .from('saved_listings')
+    .delete()
+    .eq('user_id', user.id)
+    .eq('listing_id', listingId);
+
+  return { error };
+};
+
+// Categories functions
+export const getCategories = async () => {
+  const { data, error } = await supabase
+    .from('categories')
+    .select('*')
+    .order('name');
+
+  return { data, error };
+};
+
+// Profile functions
+export const getProfile = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single();
+
+  return { data, error };
+};
+
+export const updateProfile = async (userId: string, updates: Partial<Profile>) => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .update(updates)
+    .eq('id', userId)
+    .select()
+    .single();
+
+  return { data, error };
+};
+
+// File upload functions
+export const uploadImage = async (file: File, bucket: string = 'listing-images') => {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+  
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .upload(fileName, file);
+
+  if (error) return { data: null, error };
+
+  const { data: urlData } = supabase.storage
+    .from(bucket)
+    .getPublicUrl(fileName);
+
+  return { data: { ...data, publicUrl: urlData.publicUrl }, error: null };
+};
