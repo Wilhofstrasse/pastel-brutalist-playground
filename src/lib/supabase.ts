@@ -3,13 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase not configured yet');
-}
-
-export const supabase = supabaseUrl && supabaseAnonKey 
+// Create Supabase client only if environment variables are available
+export const supabase = (supabaseUrl && supabaseAnonKey) 
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
+
+console.log('Supabase status:', supabase ? 'Connected' : 'Using demo mode');
 
 // Auto-setup function that runs once
 const setupDatabase = async () => {
