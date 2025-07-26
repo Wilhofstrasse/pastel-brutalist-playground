@@ -1,52 +1,62 @@
 import { useTranslation } from 'react-i18next';
-import { User, Settings, Heart, Package, Plus } from 'lucide-react';
+import { User, Settings, Heart, Package, Plus, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ListingCard } from '@/components/ListingCard';
-
-const mockUserListings = [
-  {
-    id: '1',
-    title: 'iPhone 15 Pro Max - Wie neu',
-    price: 'CHF 1,200',
-    location: 'Zürich',
-    imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=300&fit=crop',
-    category: 'Elektronik & Technik'
-  },
-  {
-    id: '2',
-    title: 'Gaming Setup Complete',
-    price: 'CHF 1,800',
-    location: 'Zürich',
-    imageUrl: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=300&fit=crop',
-    category: 'Elektronik & Technik'
-  }
-];
-
-const mockSavedListings = [
-  {
-    id: '3',
-    title: 'Vintage Leather Sofa',
-    price: 'CHF 850',
-    location: 'Basel',
-    imageUrl: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop',
-    category: 'Haus, Garten & Heimwerken',
-    isFavorited: true
-  },
-  {
-    id: '4',
-    title: 'Mountain Bike - Scott Scale',
-    price: 'CHF 2,500',
-    location: 'Bern',
-    imageUrl: 'https://images.unsplash.com/photo-1544191696-15693072c645?w=400&h=300&fit=crop',
-    category: 'Sport, Freizeit & Outdoor',
-    isFavorited: true
-  }
-];
+import { useAuth } from '@/hooks/useAuth';
+import { getUserListings, getSavedListings, signOut } from '@/lib/supabase';
+import { useQuery } from '@tanstack/react-query';
+import { Link, Navigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 
 export const Profile = () => {
   const { t } = useTranslation();
+  const { user, loading } = useAuth();
+  const { toast } = useToast();
+
+  const { data: userListingsData, isLoading: userListingsLoading } = useQuery({
+    queryKey: ['user-listings', user?.id],
+    queryFn: () => getUserListings(user!.id),
+    enabled: !!user?.id,
+  });
+
+  const { data: savedListingsData, isLoading: savedListingsLoading } = useQuery({
+    queryKey: ['saved-listings', user?.id],
+    queryFn: () => getSavedListings(user!.id),
+    enabled: !!user?.id,
+  });
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } else {
+      toast({
+        title: 'Signed out',
+        description: 'You have been signed out successfully.',
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const userListings = userListingsData?.data || [];
+  const savedListings = savedListingsData?.data || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,23 +71,26 @@ export const Profile = () => {
               
               <div className="flex-1">
                 <h1 className="text-3xl font-black text-foreground font-lexend mb-2">
-                  Max Mustermann
+                  {user.user_metadata?.full_name || 'User'}
                 </h1>
                 <div className="space-y-1 text-foreground">
-                  <p>Mitglied seit Januar 2024</p>
-                  <p>⭐ 4.8 Bewertung • 15 Verkäufe</p>
-                  <p>📍 Zürich, Schweiz</p>
+                  <p>{user.email}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Member since {new Date(user.created_at).toLocaleDateString()}
+                  </p>
                 </div>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button variant="bright" className="font-bold">
-                  <Plus className="h-4 w-4 mr-2" />
-                  {t('profile.createListing')}
-                </Button>
-                <Button variant="outline" className="font-bold">
-                  <Settings className="h-4 w-4 mr-2" />
-                  {t('profile.accountSettings')}
+                <Link to="/create-listing">
+                  <Button variant="bright" className="font-bold">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Listing
+                  </Button>
+                </Link>
+                <Button variant="outline" className="font-bold" onClick={handleSignOut}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
                 </Button>
               </div>
             </div>
@@ -92,14 +105,14 @@ export const Profile = () => {
               className="data-[state=active]:bg-cream font-bold"
             >
               <Package className="h-4 w-4 mr-2" />
-              {t('profile.myListings')} (2)
+              {t('profile.myListings')} ({userListings.length})
             </TabsTrigger>
             <TabsTrigger 
               value="saved-listings" 
               className="data-[state=active]:bg-lavender font-bold"
             >
               <Heart className="h-4 w-4 mr-2" />
-              {t('profile.savedListings')} (2)
+              {t('profile.savedListings')} ({savedListings.length})
             </TabsTrigger>
           </TabsList>
 
@@ -108,23 +121,35 @@ export const Profile = () => {
               <h2 className="text-2xl font-black text-foreground font-lexend">
                 {t('profile.myListings')}
               </h2>
-              <Button variant="bright" className="font-bold">
-                <Plus className="h-4 w-4 mr-2" />
-                Neue Anzeige
-              </Button>
+              <Link to="/create-listing">
+                <Button variant="bright" className="font-bold">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Neue Anzeige
+                </Button>
+              </Link>
             </div>
             
-            {mockUserListings.length > 0 ? (
+            {userListingsLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockUserListings.map((listing) => (
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="bg-muted h-48 rounded-lg mb-4"></div>
+                    <div className="bg-muted h-4 rounded mb-2"></div>
+                    <div className="bg-muted h-4 rounded w-3/4"></div>
+                  </div>
+                ))}
+              </div>
+            ) : userListings.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {userListings.map((listing) => (
                   <ListingCard
                     key={listing.id}
                     id={listing.id}
                     title={listing.title}
-                    price={listing.price}
+                    price={`${listing.currency} ${listing.price.toLocaleString()}`}
                     location={listing.location}
-                    imageUrl={listing.imageUrl}
-                    category={listing.category}
+                    imageUrl={listing.image_urls[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
+                    category={listing.categories?.name_en || 'Uncategorized'}
                   />
                 ))}
               </div>
@@ -133,15 +158,17 @@ export const Profile = () => {
                 <CardContent className="p-12 text-center">
                   <Package className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-xl font-black mb-2 font-lexend">
-                    Noch keine Anzeigen
+                    No listings yet
                   </h3>
                   <p className="text-muted-foreground mb-6">
-                    Erstelle deine erste Anzeige und beginne zu verkaufen!
+                    Create your first listing to start selling on our marketplace.
                   </p>
-                  <Button variant="bright" className="font-bold">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Erste Anzeige erstellen
-                  </Button>
+                  <Link to="/create-listing">
+                    <Button variant="bright" className="font-bold">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create Your First Listing
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             )}
@@ -152,18 +179,28 @@ export const Profile = () => {
               {t('profile.savedListings')}
             </h2>
             
-            {mockSavedListings.length > 0 ? (
+            {savedListingsLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockSavedListings.map((listing) => (
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="bg-muted h-48 rounded-lg mb-4"></div>
+                    <div className="bg-muted h-4 rounded mb-2"></div>
+                    <div className="bg-muted h-4 rounded w-3/4"></div>
+                  </div>
+                ))}
+              </div>
+            ) : savedListings.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {savedListings.map((savedListing) => (
                   <ListingCard
-                    key={listing.id}
-                    id={listing.id}
-                    title={listing.title}
-                    price={listing.price}
-                    location={listing.location}
-                    imageUrl={listing.imageUrl}
-                    category={listing.category}
-                    isFavorited={listing.isFavorited}
+                    key={savedListing.id}
+                    id={savedListing.listings!.id}
+                    title={savedListing.listings!.title}
+                    price={`${savedListing.listings!.currency} ${savedListing.listings!.price.toLocaleString()}`}
+                    location={savedListing.listings!.location}
+                    imageUrl={savedListing.listings!.image_urls[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
+                    category={savedListing.listings!.categories?.name_en || 'Uncategorized'}
+                    isFavorited={true}
                   />
                 ))}
               </div>
@@ -172,10 +209,10 @@ export const Profile = () => {
                 <CardContent className="p-12 text-center">
                   <Heart className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-xl font-black mb-2 font-lexend">
-                    Keine gespeicherten Anzeigen
+                    No saved listings
                   </h3>
                   <p className="text-muted-foreground">
-                    Speichere interessante Anzeigen für später!
+                    Items you save will appear here for easy access later.
                   </p>
                 </CardContent>
               </Card>

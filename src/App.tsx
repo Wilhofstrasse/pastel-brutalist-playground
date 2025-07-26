@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { ListingDetail } from "./pages/ListingDetail";
 import { Profile } from "./pages/Profile";
+import { Login } from "./pages/Login";
+import { CreateListing } from "./pages/CreateListing";
 import NotFound from "./pages/NotFound";
 import { Navbar } from "./components/Navbar";
 import "./i18n";
@@ -24,8 +26,8 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/listing/:id" element={<ListingDetail />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/login" element={<div className="p-8 text-center">Login page - coming soon</div>} />
-            <Route path="/signup" element={<div className="p-8 text-center">Sign up page - coming soon</div>} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/create-listing" element={<CreateListing />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

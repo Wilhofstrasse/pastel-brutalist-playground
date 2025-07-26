@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Search, ChevronDown, User, Menu, X } from 'lucide-react';
+import { Search, ChevronDown, User, Menu, X, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
@@ -11,11 +11,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { categories } from '@/data/categories';
+import { useAuth } from '@/hooks/useAuth';
 
 export const Navbar = () => {
   const { t, i18n } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const { user } = useAuth();
 
   const currentLanguage = i18n.language.startsWith('de') ? 'de' : 'en';
 
@@ -85,25 +87,36 @@ export const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Account Menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="bg-background">
-                  <User className="h-5 w-5" />
+            {/* Auth Navigation */}
+            {user ? (
+              <>
+                <Link to="/create-listing">
+                  <Button variant="bright" className="font-bold">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Listing
+                  </Button>
+                </Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="bg-background">
+                      <User className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-background border-2 border-black shadow-brutalist rounded-sm">
+                    <DropdownMenuItem>
+                      <Link to="/profile">{t('common.profile')}</Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <Link to="/login">
+                <Button variant="outline" className="font-bold">
+                  <User className="h-4 w-4 mr-2" />
+                  Sign In
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-background border-2 border-black shadow-brutalist rounded-sm">
-                <DropdownMenuItem>
-                  <Link to="/login">{t('common.login')}</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link to="/signup">{t('common.signUp')}</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link to="/profile">{t('common.profile')}</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -147,15 +160,29 @@ export const Navbar = () => {
               <Button variant="ghost" className="w-full justify-start bg-background">
                 {t('common.categories')}
               </Button>
-              <Button variant="ghost" className="w-full justify-start bg-background">
-                <Link to="/login">{t('common.login')}</Link>
-              </Button>
-              <Button variant="ghost" className="w-full justify-start bg-background">
-                <Link to="/signup">{t('common.signUp')}</Link>
-              </Button>
-              <Button variant="ghost" className="w-full justify-start bg-background">
-                <Link to="/profile">{t('common.profile')}</Link>
-              </Button>
+              {user ? (
+                <>
+                  <Link to="/create-listing" className="block">
+                    <Button variant="bright" className="w-full justify-start font-bold">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create Listing
+                    </Button>
+                  </Link>
+                  <Link to="/profile" className="block">
+                    <Button variant="ghost" className="w-full justify-start bg-background">
+                      <User className="h-4 w-4 mr-2" />
+                      {t('common.profile')}
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <Link to="/login" className="block">
+                  <Button variant="outline" className="w-full justify-start font-bold">
+                    <User className="h-4 w-4 mr-2" />
+                    Sign In
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         )}

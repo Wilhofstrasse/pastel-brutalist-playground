@@ -2,63 +2,20 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { ListingCard } from '@/components/ListingCard';
 import { categories } from '@/data/categories';
+import { getListings } from '@/lib/supabase';
+import { useQuery } from '@tanstack/react-query';
 import heroImage from '@/assets/marketplace-hero.jpg';
-
-// Mock data for featured listings
-const mockListings = [
-  {
-    id: '1',
-    title: 'iPhone 15 Pro Max - Wie neu',
-    price: 'CHF 1,200',
-    location: 'Zürich',
-    imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=300&fit=crop',
-    category: 'Elektronik & Technik'
-  },
-  {
-    id: '2',
-    title: 'Vintage Leather Sofa',
-    price: 'CHF 850',
-    location: 'Basel',
-    imageUrl: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop',
-    category: 'Haus, Garten & Heimwerken'
-  },
-  {
-    id: '3',
-    title: 'Mountain Bike - Scott Scale',
-    price: 'CHF 2,500',
-    location: 'Bern',
-    imageUrl: 'https://images.unsplash.com/photo-1544191696-15693072c645?w=400&h=300&fit=crop',
-    category: 'Sport, Freizeit & Outdoor'
-  },
-  {
-    id: '4',
-    title: 'Designer Handtasche',
-    price: 'CHF 320',
-    location: 'Genf',
-    imageUrl: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=300&fit=crop',
-    category: 'Mode & Accessoires'
-  },
-  {
-    id: '5',
-    title: 'BMW 3er Serie',
-    price: 'CHF 28,500',
-    location: 'Lausanne',
-    imageUrl: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=300&fit=crop',
-    category: 'Fahrzeuge & Motorräder'
-  },
-  {
-    id: '6',
-    title: 'Gaming Setup Complete',
-    price: 'CHF 1,800',
-    location: 'St. Gallen',
-    imageUrl: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=300&fit=crop',
-    category: 'Elektronik & Technik'
-  }
-];
 
 export const Home = () => {
   const { t, i18n } = useTranslation();
   const currentLanguage = i18n.language.startsWith('de') ? 'de' : 'en';
+  
+  const { data: listingsData, isLoading } = useQuery({
+    queryKey: ['listings'],
+    queryFn: () => getListings(),
+  });
+  
+  const featuredListings = listingsData?.data?.slice(0, 6) || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -136,19 +93,35 @@ export const Home = () => {
             </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockListings.map((listing) => (
-              <ListingCard
-                key={listing.id}
-                id={listing.id}
-                title={listing.title}
-                price={listing.price}
-                location={listing.location}
-                imageUrl={listing.imageUrl}
-                category={listing.category}
-              />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="bg-muted h-48 rounded-lg mb-4"></div>
+                  <div className="bg-muted h-4 rounded mb-2"></div>
+                  <div className="bg-muted h-4 rounded w-3/4"></div>
+                </div>
+              ))}
+            </div>
+          ) : featuredListings.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredListings.map((listing) => (
+                <ListingCard
+                  key={listing.id}
+                  id={listing.id}
+                  title={listing.title}
+                  price={`${listing.currency} ${listing.price.toLocaleString()}`}
+                  location={listing.location}
+                  imageUrl={listing.image_urls[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
+                  category={listing.categories?.name_en || 'Uncategorized'}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">No listings available yet.</p>
+            </div>
+          )}
         </div>
       </section>
     </div>
