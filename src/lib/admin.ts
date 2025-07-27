@@ -41,7 +41,7 @@ export const getAdminStats = async (): Promise<AdminStats> => {
   const [usersCount, listingsCount, activeListingsCount, pendingListingsCount, categoriesCount] = await Promise.all([
     supabase.from('profiles').select('id', { count: 'exact', head: true }),
     supabase.from('listings').select('id', { count: 'exact', head: true }),
-    supabase.from('listings').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+    supabase.from('listings').select('id', { count: 'exact', head: true }).eq('status', 'active').eq('moderation_status', 'approved'),
     supabase.from('listings').select('id', { count: 'exact', head: true }).eq('moderation_status', 'pending'),
     supabase.from('categories').select('id', { count: 'exact', head: true })
   ]);
