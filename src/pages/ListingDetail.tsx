@@ -80,7 +80,7 @@ export const ListingDetail = () => {
             <div className="space-y-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="text-sm font-bold text-sage uppercase tracking-wide mb-2">
+                  <div className="text-sm font-semibold text-primary uppercase tracking-wide mb-2">
                     {listing.category}
                   </div>
                   <h1 className="text-3xl font-black text-foreground font-lexend">

@@ -36,7 +36,7 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <div className="w-10 h-10 bg-sage border-2 border-black shadow-brutalist rounded-sm flex items-center justify-center">
+            <div className="w-10 h-10 bg-primary text-primary-foreground rounded-lg flex items-center justify-center shadow-sm">
               <span className="text-xl font-black">F</span>
             </div>
             <span className="ml-3 text-xl font-black hidden sm:block">filipeandrade.com</span>
@@ -50,13 +50,13 @@ export const Navbar = () => {
                 placeholder={t('common.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="rounded-r-none border-r-0 bg-background border-2 border-black shadow-brutalist h-12"
+                className="rounded-r-none border-r-0 bg-background focus:ring-2 focus:ring-primary/20 h-11"
               />
               <Button 
                 type="submit" 
-                variant="bright" 
+                variant="default" 
                 size="icon" 
-                className="rounded-l-none"
+                className="rounded-l-none h-11"
               >
                 <Search className="h-5 w-5" />
               </Button>
@@ -73,12 +73,12 @@ export const Navbar = () => {
                   <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto bg-background border-2 border-black shadow-brutalist rounded-sm">
-                <DropdownMenuItem className="font-bold border-b border-black">
+              <DropdownMenuContent className="w-80 max-h-96 overflow-y-auto bg-background border border-border shadow-lg rounded-md z-50">
+                <DropdownMenuItem className="font-semibold border-b border-border">
                   {t('common.allCategories')}
                 </DropdownMenuItem>
                 {categories.map((category) => (
-                  <DropdownMenuItem key={category.id} className="hover:bg-mint">
+                  <DropdownMenuItem key={category.id} className="hover:bg-accent">
                     <Link 
                       to={`/category/${category.id}`} 
                       className="w-full flex items-center py-2"
@@ -94,9 +94,9 @@ export const Navbar = () => {
             {user ? (
               <>
                 <Link to="/create-listing">
-                  <Button variant="bright" className="font-bold">
+                  <Button variant="default" className="font-semibold">
                     <Plus className="h-4 w-4 mr-2" />
-                    Create Listing
+                    Anzeige erstellen
                   </Button>
                 </Link>
                 <DropdownMenu>
@@ -105,7 +105,7 @@ export const Navbar = () => {
                       <User className="h-5 w-5" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-background border-2 border-black shadow-brutalist rounded-sm">
+                  <DropdownMenuContent className="bg-background border border-border shadow-lg rounded-md z-50">
                     <DropdownMenuItem>
                       <Link to="/profile">{t('common.profile')}</Link>
                     </DropdownMenuItem>
@@ -114,9 +114,9 @@ export const Navbar = () => {
               </>
             ) : (
               <Link to="/login">
-                <Button variant="outline" className="font-bold">
+                <Button variant="outline" className="font-semibold">
                   <User className="h-4 w-4 mr-2" />
-                  Sign In
+                  Anmelden
                 </Button>
               </Link>
             )}
@@ -143,13 +143,13 @@ export const Navbar = () => {
               placeholder={t('common.search')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="rounded-r-none border-r-0 bg-background border-2 border-black shadow-brutalist h-12"
+              className="rounded-r-none border-r-0 bg-background focus:ring-2 focus:ring-primary/20 h-11"
             />
             <Button 
               type="submit" 
-              variant="bright" 
+              variant="default" 
               size="icon" 
-              className="rounded-l-none"
+              className="rounded-l-none h-11"
             >
               <Search className="h-5 w-5" />
             </Button>
@@ -166,9 +166,9 @@ export const Navbar = () => {
               {user ? (
                 <>
                   <Link to="/create-listing" className="block">
-                    <Button variant="bright" className="w-full justify-start font-bold">
+                    <Button variant="default" className="w-full justify-start font-semibold">
                       <Plus className="h-4 w-4 mr-2" />
-                      Create Listing
+                      Anzeige erstellen
                     </Button>
                   </Link>
                   <Link to="/profile" className="block">
@@ -180,9 +180,9 @@ export const Navbar = () => {
                 </>
               ) : (
                 <Link to="/login" className="block">
-                  <Button variant="outline" className="w-full justify-start font-bold">
+                  <Button variant="outline" className="w-full justify-start font-semibold">
                     <User className="h-4 w-4 mr-2" />
-                    Sign In
+                    Anmelden
                   </Button>
                 </Link>
               )}

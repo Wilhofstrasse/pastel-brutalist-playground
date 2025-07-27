@@ -54,19 +54,19 @@ export const Search = () => {
           <Button 
             onClick={() => navigate('/')} 
             variant="ghost" 
-            className="mb-4 bg-background"
+            className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
+            {t('common.backToHome')}
           </Button>
           
-          <h1 className="text-4xl font-black text-foreground mb-4 font-lexend">
-            Search Results
+          <h1 className="text-4xl font-bold text-foreground mb-4">
+            {t('common.searchResults')}
           </h1>
           
           {queryParam && (
             <p className="text-xl text-muted-foreground">
-              Results for "{queryParam}"
+              Ergebnisse für "{queryParam}"
             </p>
           )}
         </div>
@@ -76,16 +76,16 @@ export const Search = () => {
           <form onSubmit={handleSearch} className="flex max-w-lg">
             <Input
               type="text"
-              placeholder="Search for anything..."
+              placeholder={t('common.search')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="rounded-r-none border-r-0 bg-background border-2 border-black shadow-brutalist h-12"
+              className="rounded-r-none border-r-0 bg-background focus:ring-2 focus:ring-primary/20 h-11"
             />
             <Button 
               type="submit" 
-              variant="bright" 
+              variant="default" 
               size="icon" 
-              className="rounded-l-none"
+              className="rounded-l-none h-11"
             >
               <SearchIcon className="h-5 w-5" />
             </Button>
@@ -95,7 +95,7 @@ export const Search = () => {
         {/* Results Count */}
         <div className="mb-4">
           <p className="text-muted-foreground">
-            {isLoading ? 'Loading...' : `${filteredListings.length} listing${filteredListings.length !== 1 ? 's' : ''} found`}
+            {isLoading ? 'Laden...' : `${filteredListings.length} ${t('common.listingsFound')}`}
           </p>
         </div>
 
@@ -125,23 +125,23 @@ export const Search = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 border-2 border-black bg-muted rounded-lg">
+          <div className="text-center py-12 border border-border bg-muted rounded-lg">
             <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-2xl font-bold mb-2">No results found</h3>
+            <h3 className="text-2xl font-bold mb-2">{t('homepage.noListings')}</h3>
             <p className="text-muted-foreground mb-6">
               {searchQuery 
-                ? `No listings found for "${searchQuery}". Try different keywords.`
-                : "Enter a search term to find listings."
+                ? `Keine Anzeigen für "${searchQuery}" gefunden. Versuchen Sie andere Suchbegriffe.`
+                : "Geben Sie einen Suchbegriff ein, um Anzeigen zu finden."
               }
             </p>
             <div className="space-x-4">
               {searchQuery && (
                 <Button onClick={() => setSearchQuery('')} variant="outline">
-                  Clear Search
+                  Suche löschen
                 </Button>
               )}
-              <Button onClick={() => navigate('/')} variant="bright">
-                Browse All Categories
+              <Button onClick={() => navigate('/')} variant="default">
+                Alle Kategorien durchsuchen
               </Button>
             </div>
           </div>

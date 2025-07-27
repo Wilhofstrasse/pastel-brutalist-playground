@@ -14,7 +14,11 @@
     "description": "Description",
     "contact": "Contact",
     "details": "Details",
-    "back": "Back"
+    "back": "Back",
+    "searchResults": "Search Results",
+    "backToHome": "Back to Home",
+    "listingsFound": "listings found",
+    "createFirstListing": "Create First Listing"
   },
   "homepage": {
     "title": "Find everything you're looking for",

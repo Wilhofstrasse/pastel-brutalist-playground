@@ -42,13 +42,13 @@ export const Category = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-black mb-4 font-lexend">Category Not Found</h1>
+          <h1 className="text-4xl font-bold mb-4">Kategorie nicht gefunden</h1>
           <p className="text-xl text-muted-foreground mb-8">
-            The category you're looking for doesn't exist.
+            Die gesuchte Kategorie existiert nicht.
           </p>
-          <Button onClick={() => navigate('/')} variant="bright">
+          <Button onClick={() => navigate('/')} variant="default">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
+            {t('common.backToHome')}
           </Button>
         </div>
       </div>
@@ -63,18 +63,18 @@ export const Category = () => {
           <Button 
             onClick={() => navigate('/')} 
             variant="ghost" 
-            className="mb-4 bg-background"
+            className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
+            {t('common.backToHome')}
           </Button>
           
-          <h1 className="text-4xl font-black text-foreground mb-4 font-lexend">
+          <h1 className="text-4xl font-bold text-foreground mb-4">
             {category.name[currentLanguage]}
           </h1>
           
           <p className="text-xl text-muted-foreground">
-            Browse all listings in {category.name[currentLanguage]}
+            Durchsuche alle Anzeigen in {category.name[currentLanguage]}
           </p>
         </div>
 
@@ -83,16 +83,16 @@ export const Category = () => {
           <form onSubmit={handleSearch} className="flex max-w-lg">
             <Input
               type="text"
-              placeholder={`Search in ${category.name[currentLanguage]}...`}
+              placeholder={`Suchen in ${category.name[currentLanguage]}...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="rounded-r-none border-r-0 bg-background border-2 border-black shadow-brutalist h-12"
+              className="rounded-r-none border-r-0 bg-background focus:ring-2 focus:ring-primary/20 h-11"
             />
             <Button 
               type="submit" 
-              variant="bright" 
+              variant="default" 
               size="icon" 
-              className="rounded-l-none"
+              className="rounded-l-none h-11"
             >
               <Search className="h-5 w-5" />
             </Button>
@@ -102,7 +102,7 @@ export const Category = () => {
         {/* Results */}
         <div className="mb-4">
           <p className="text-muted-foreground">
-            {isLoading ? 'Loading...' : `${filteredListings.length} listing${filteredListings.length !== 1 ? 's' : ''} found`}
+            {isLoading ? 'Laden...' : `${filteredListings.length} ${t('common.listingsFound')}`}
           </p>
         </div>
 
@@ -132,23 +132,23 @@ export const Category = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 border-2 border-black bg-muted rounded-lg">
+          <div className="text-center py-12 border border-border bg-muted rounded-lg">
             <div className="text-6xl mb-4">📦</div>
-            <h3 className="text-2xl font-bold mb-2">No listings found</h3>
+            <h3 className="text-2xl font-bold mb-2">{t('homepage.noListings')}</h3>
             <p className="text-muted-foreground mb-6">
               {searchQuery 
-                ? `No listings found for "${searchQuery}" in ${category.name[currentLanguage]}`
-                : `No listings available in ${category.name[currentLanguage]} yet.`
+                ? `Keine Anzeigen für "${searchQuery}" in ${category.name[currentLanguage]} gefunden`
+                : `Noch keine Anzeigen in ${category.name[currentLanguage]} verfügbar.`
               }
             </p>
             <div className="space-x-4">
               {searchQuery && (
                 <Button onClick={() => setSearchQuery('')} variant="outline">
-                  Clear Search
+                  Suche löschen
                 </Button>
               )}
-              <Button onClick={() => navigate('/create-listing')} variant="bright">
-                Create First Listing
+              <Button onClick={() => navigate('/create-listing')} variant="default">
+                {t('common.createFirstListing')}
               </Button>
             </div>
           </div>

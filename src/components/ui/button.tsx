@@ -5,24 +5,26 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-base font-bold transition-all border-2 border-black focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-5 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-sage text-black shadow-brutalist hover:translate-x-1 hover:translate-y-1 hover:shadow-none",
-        destructive: "bg-destructive text-destructive-foreground shadow-brutalist hover:translate-x-1 hover:translate-y-1 hover:shadow-none",
-        outline: "bg-background text-black shadow-brutalist hover:bg-mint hover:translate-x-1 hover:translate-y-1 hover:shadow-none",
-        secondary: "bg-cream text-black shadow-brutalist hover:translate-x-1 hover:translate-y-1 hover:shadow-none",
-        ghost: "border-transparent shadow-none hover:bg-mint hover:border-black hover:shadow-brutalist",
-        link: "text-primary border-transparent shadow-none underline-offset-4 hover:underline",
-        accent: "bg-lavender text-black shadow-brutalist hover:translate-x-1 hover:translate-y-1 hover:shadow-none",
-        bright: "bg-lime text-black shadow-brutalist hover:translate-x-1 hover:translate-y-1 hover:shadow-none",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm hover:shadow-md",
+        outline:
+          "border border-border bg-card hover:bg-accent hover:text-accent-foreground shadow-sm hover:shadow-md",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm hover:shadow-md",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+        bright: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md hover:shadow-lg font-bold",
       },
       size: {
-        default: "h-12 px-6 py-3 rounded-sm",
-        sm: "h-10 px-4 py-2 rounded-sm text-sm",
-        lg: "h-14 px-8 py-4 rounded-sm text-lg",
-        icon: "h-12 w-12 rounded-sm",
+        default: "h-10 px-4 py-2 rounded-md",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10 rounded-md",
       },
     },
     defaultVariants: {

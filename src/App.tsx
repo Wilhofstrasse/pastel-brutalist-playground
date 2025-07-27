@@ -12,6 +12,7 @@ import { Category } from "./pages/Category";
 import { Search } from "./pages/Search";
 import NotFound from "./pages/NotFound";
 import { Navbar } from "./components/Navbar";
+import { Footer } from "./components/Footer";
 import "./i18n";
 
 const queryClient = new QueryClient();
@@ -22,19 +23,22 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background flex flex-col">
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/listing/:id" element={<ListingDetail />} />
-            <Route path="/category/:categoryId" element={<Category />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/create-listing" element={<CreateListing />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/listing/:id" element={<ListingDetail />} />
+              <Route path="/category/:categoryId" element={<Category />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/create-listing" element={<CreateListing />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+          <Footer />
         </div>
       </BrowserRouter>
     </TooltipProvider>

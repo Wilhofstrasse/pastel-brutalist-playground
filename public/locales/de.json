@@ -14,7 +14,11 @@
     "description": "Beschreibung",
     "contact": "Kontakt",
     "details": "Details",
-    "back": "Zurück"
+    "back": "Zurück",
+    "searchResults": "Suchergebnisse",
+    "backToHome": "Zurück zur Startseite",
+    "listingsFound": "Anzeigen gefunden",
+    "createFirstListing": "Erste Anzeige erstellen"
   },
   "homepage": {
     "title": "Finde alles was du suchst",
