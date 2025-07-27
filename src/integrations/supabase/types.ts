@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_activities: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          details: Json | null
+          id: string
+          target_id: string | null
+          target_type: string
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_type: string
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_type?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -46,6 +76,9 @@ export type Database = {
           id: string
           images: string[] | null
           location: string | null
+          moderated_at: string | null
+          moderated_by: string | null
+          moderation_status: string | null
           price: number | null
           status: string | null
           title: string
@@ -59,6 +92,9 @@ export type Database = {
           id?: string
           images?: string[] | null
           location?: string | null
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_status?: string | null
           price?: number | null
           status?: string | null
           title: string
@@ -72,6 +108,9 @@ export type Database = {
           id?: string
           images?: string[] | null
           location?: string | null
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_status?: string | null
           price?: number | null
           status?: string | null
           title?: string
@@ -150,15 +189,46 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
+      }
+      is_admin: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "user" | "admin" | "moderator"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -285,6 +355,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["user", "admin", "moderator"],
+    },
   },
 } as const
