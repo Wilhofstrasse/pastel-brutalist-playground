@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { createListing, uploadImage, getCategories } from '@/lib/supabase';
+import { createListing, uploadImage, getCategories } from '@/lib/marketplace';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
@@ -17,12 +17,11 @@ import { ArrowLeft, Upload, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const listingSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  price: z.number().min(0, 'Price must be positive'),
-  currency: z.string().default('CHF'),
-  location: z.string().min(2, 'Location is required'),
-  category_id: z.string().min(1, 'Please select a category'),
+  title: z.string().min(3, 'Titel muss mindestens 3 Zeichen lang sein'),
+  description: z.string().min(10, 'Beschreibung muss mindestens 10 Zeichen lang sein'),
+  price: z.number().min(0, 'Preis muss positiv sein'),
+  location: z.string().min(2, 'Standort ist erforderlich'),
+  category_id: z.string().min(1, 'Bitte wählen Sie eine Kategorie'),
 });
 
 type ListingFormData = z.infer<typeof listingSchema>;
@@ -45,7 +44,6 @@ export const CreateListing = () => {
       title: '',
       description: '',
       price: 0,
-      currency: 'CHF',
       location: '',
       category_id: '',
     },
@@ -55,8 +53,8 @@ export const CreateListing = () => {
     const files = Array.from(e.target.files || []);
     if (images.length + files.length > 5) {
       toast({
-        title: 'Too many images',
-        description: 'Maximum 5 images allowed',
+        title: 'Zu viele Bilder',
+        description: 'Maximum 5 Bilder erlaubt',
         variant: 'destructive',
       });
       return;
@@ -71,8 +69,8 @@ export const CreateListing = () => {
   const onSubmit = async (data: ListingFormData) => {
     if (!user) {
       toast({
-        title: 'Authentication required',
-        description: 'Please sign in to create a listing',
+        title: 'Anmeldung erforderlich',
+        description: 'Sie müssen angemeldet sein, um eine Anzeige zu erstellen',
         variant: 'destructive',
       });
       return;
@@ -83,37 +81,38 @@ export const CreateListing = () => {
       // Upload images
       const imageUrls: string[] = [];
       for (const image of images) {
-        const { data: uploadData, error } = await uploadImage(image);
-        if (error) throw error;
-        if (uploadData?.publicUrl) {
-          imageUrls.push(uploadData.publicUrl);
-        }
+        const imageUrl = await uploadImage(image);
+        imageUrls.push(imageUrl);
       }
 
       // Create listing
-      const { data: listing, error } = await createListing({
+      const listing = await createListing({
         title: data.title,
         description: data.description,
         price: data.price,
-        currency: data.currency,
         location: data.location,
         category_id: data.category_id,
-        image_urls: imageUrls,
-        status: 'active' as const,
+        images: imageUrls,
       });
 
-      if (error) throw error;
-
       toast({
-        title: 'Success!',
-        description: 'Your listing has been created.',
+        title: 'Erfolgreich!',
+        description: 'Ihre Anzeige wurde erstellt.',
       });
 
       navigate('/profile');
     } catch (error: any) {
+      let errorMessage = 'Ein Fehler ist aufgetreten';
+      
+      if (error.message?.includes('violates row-level security')) {
+        errorMessage = 'Sie haben keine Berechtigung, diese Aktion auszuführen.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
-        title: 'Error',
-        description: error.message,
+        title: 'Fehler',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
@@ -126,12 +125,12 @@ export const CreateListing = () => {
       <div className="container mx-auto px-4 py-8">
         <Card className="max-w-md mx-auto">
           <CardContent className="pt-6 text-center">
-            <h2 className="text-2xl font-black mb-4">Sign in required</h2>
+            <h2 className="text-2xl font-black mb-4">Anmeldung erforderlich</h2>
             <p className="text-muted-foreground mb-4">
-              You need to be signed in to create a listing.
+              Sie müssen angemeldet sein, um eine Anzeige zu erstellen.
             </p>
             <Link to="/login">
-              <Button>Sign In</Button>
+              <Button>Anmelden</Button>
             </Link>
           </CardContent>
         </Card>
@@ -144,13 +143,13 @@ export const CreateListing = () => {
       <div className="mb-6">
         <Link to="/profile" className="inline-flex items-center text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Profile
+          Zurück zum Profil
         </Link>
       </div>
 
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle className="text-3xl font-black font-lexend">Create New Listing</CardTitle>
+          <CardTitle className="text-3xl font-black font-lexend">Neue Anzeige erstellen</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -160,7 +159,7 @@ export const CreateListing = () => {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>Titel</FormLabel>
                     <FormControl>
                       <Input placeholder="z.B. Gebrauchtes Fahrrad in gutem Zustand" {...field} />
                     </FormControl>
@@ -174,7 +173,7 @@ export const CreateListing = () => {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>Beschreibung</FormLabel>
                     <FormControl>
                       <Textarea 
                         placeholder="Beschreiben Sie Ihren Artikel detailliert..."
@@ -193,7 +192,7 @@ export const CreateListing = () => {
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Price (CHF)</FormLabel>
+                      <FormLabel>Preis (CHF)</FormLabel>
                       <FormControl>
                         <Input 
                           type="number" 
@@ -217,7 +216,7 @@ export const CreateListing = () => {
                   name="location"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Location</FormLabel>
+                      <FormLabel>Standort</FormLabel>
                       <FormControl>
                         <Input 
                           placeholder="z.B. Zürich, Basel, Bern..." 
@@ -236,17 +235,17 @@ export const CreateListing = () => {
                 name="category_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>Kategorie</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a category" />
+                          <SelectValue placeholder="Kategorie auswählen" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {categories?.data?.map((category) => (
+                        {categories?.map((category) => (
                           <SelectItem key={category.id} value={category.id}>
-                            {category.name_de || category.name_en || category.name}
+                            {category.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -257,7 +256,7 @@ export const CreateListing = () => {
               />
 
               <div className="space-y-4">
-                <FormLabel>Images (Max 5)</FormLabel>
+                <FormLabel>Bilder (Max 5)</FormLabel>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {images.map((image, index) => (
                     <div key={index} className="relative group">
@@ -281,7 +280,7 @@ export const CreateListing = () => {
                   {images.length < 5 && (
                     <label className="flex flex-col items-center justify-center h-32 border-2 border-dashed border-muted-foreground/25 rounded-lg cursor-pointer hover:border-muted-foreground/50 transition-colors">
                       <Upload className="h-6 w-6 text-muted-foreground mb-2" />
-                      <span className="text-sm text-muted-foreground">Add Image</span>
+                      <span className="text-sm text-muted-foreground">Bild hinzufügen</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -292,10 +291,13 @@ export const CreateListing = () => {
                     </label>
                   )}
                 </div>
+                <p className="text-xs text-muted-foreground">
+                  Tipp: Gute Bilder erhöhen die Chance auf erfolgreiche Verkäufe
+                </p>
               </div>
 
               <Button type="submit" className="w-full" disabled={uploading}>
-                {uploading ? 'Creating...' : 'Create Listing'}
+                {uploading ? 'Wird erstellt...' : 'Anzeige erstellen'}
               </Button>
             </form>
           </Form>

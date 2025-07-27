@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ListingCard } from '@/components/ListingCard';
 import { useAuth } from '@/hooks/useAuth';
-import { getUserListings, getSavedListings, signOut } from '@/lib/supabase';
+import { getUserListings, getSavedListings, signOut } from '@/lib/marketplace';
 import { useQuery } from '@tanstack/react-query';
 import { Link, Navigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -28,17 +28,17 @@ export const Profile = () => {
   });
 
   const handleSignOut = async () => {
-    const { error } = await signOut();
-    if (error) {
+    try {
+      await signOut();
       toast({
-        title: 'Error',
+        title: 'Abgemeldet',
+        description: 'Sie wurden erfolgreich abgemeldet.',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Fehler',
         description: error.message,
         variant: 'destructive',
-      });
-    } else {
-      toast({
-        title: 'Signed out',
-        description: 'You have been signed out successfully.',
       });
     }
   };
@@ -55,8 +55,8 @@ export const Profile = () => {
     return <Navigate to="/login" replace />;
   }
 
-  const userListings = userListingsData?.data || [];
-  const savedListings = savedListingsData?.data || [];
+  const userListings = userListingsData || [];
+  const savedListings = savedListingsData || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -152,10 +152,10 @@ export const Profile = () => {
                     key={listing.id}
                     id={listing.id}
                     title={listing.title}
-                    price={`${listing.currency} ${listing.price.toLocaleString()}`}
-                    location={listing.location}
-                    imageUrl={listing.image_urls[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
-                    category={listing.categories?.name_en || 'Uncategorized'}
+                    price={`CHF ${listing.price?.toLocaleString() || '0'}`}
+                    location={listing.location || 'Unbekannt'}
+                    imageUrl={listing.images?.[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
+                    category="Allgemein"
                   />
                 ))}
               </div>

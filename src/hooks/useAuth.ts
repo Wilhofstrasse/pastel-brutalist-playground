@@ -1,42 +1,31 @@
 import { useState, useEffect } from 'react';
-import { supabase, getCurrentUser } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
+import type { User, Session } from '@supabase/supabase-js';
 
 export const useAuth = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const initAuth = async () => {
-      if (supabase) {
-        // Real Supabase auth
-        const { data: { session } } = await supabase.auth.getSession();
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-          (_event, session) => {
-            setUser(session?.user ?? null);
-          }
-        );
-
-        return () => subscription.unsubscribe();
-      } else {
-        // Fallback auth
-        const currentUser = await getCurrentUser();
-        setUser(currentUser);
-        setLoading(false);
-
-        const handleStorageChange = () => {
-          getCurrentUser().then(setUser);
-        };
-
-        window.addEventListener('storage', handleStorageChange);
-        return () => window.removeEventListener('storage', handleStorageChange);
       }
-    };
+    );
 
-    initAuth();
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  return { user, loading };
+  return { user, session, loading };
 };

@@ -2,22 +2,28 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ListingCard } from '@/components/ListingCard';
-import { categories } from '@/data/categories';
-import { getListings } from '@/lib/supabase';
+import { getListings, getCategories } from '@/lib/marketplace';
 import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/useAuth';
 import heroImage from '@/assets/marketplace-hero.jpg';
 
 export const Home = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const currentLanguage = i18n.language.startsWith('de') ? 'de' : 'en';
+  const { user } = useAuth();
   
   const { data: listingsData, isLoading } = useQuery({
     queryKey: ['listings'],
     queryFn: () => getListings(),
   });
+
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => getCategories(),
+  });
   
-  const featuredListings = listingsData?.data?.slice(0, 6) || [];
+  const featuredListings = listingsData?.slice(0, 6) || [];
+  const categories = categoriesData || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -36,9 +42,9 @@ export const Home = () => {
                 size="lg" 
                 variant="default" 
                 className="font-semibold"
-                onClick={() => navigate('/create-listing')}
+                onClick={() => navigate(user ? '/create-listing' : '/login')}
               >
-                {t('profile.createListing')}
+                {user ? 'Anzeige erstellen' : 'Jetzt anmelden'}
               </Button>
               <Button 
                 size="lg" 
@@ -57,26 +63,21 @@ export const Home = () => {
       <section id="categories-section" className="py-16 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-foreground mb-8">
-            {t('common.categories')}
+            Kategorien
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
             {categories.map((category) => (
               <Button
                 key={category.id}
                 variant="outline"
-                onClick={() => navigate(`/category/${category.id}`)}
+                onClick={() => navigate(`/category/${category.slug}`)}
                 className="h-auto p-4 flex flex-col items-center justify-center gap-3 min-h-[140px] max-w-full"
               >
-                <div className="text-3xl flex-shrink-0">{category.icon}</div>
+                <div className="text-3xl flex-shrink-0">📦</div>
                 <div className="flex flex-col items-center gap-1 w-full overflow-hidden">
                   <span className="text-sm font-bold leading-tight text-center line-clamp-2 break-words max-w-full">
-                    {category.name[currentLanguage].split(' ')[0]}
+                    {category.name}
                   </span>
-                  {category.name[currentLanguage].split(' ').length > 1 && (
-                    <span className="text-xs text-muted-foreground leading-tight text-center line-clamp-2 break-words max-w-full">
-                      {category.name[currentLanguage].split(' ').slice(1).join(' ')}
-                    </span>
-                  )}
                 </div>
               </Button>
             ))}
@@ -89,7 +90,7 @@ export const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold text-foreground">
-              {t('homepage.featuredListings')}
+              Aktuelle Anzeigen
             </h2>
             <Button 
               variant="outline" 
@@ -117,16 +118,24 @@ export const Home = () => {
                   key={listing.id}
                   id={listing.id}
                   title={listing.title}
-                  price={`${listing.currency} ${listing.price.toLocaleString()}`}
-                  location={listing.location}
-                  imageUrl={listing.image_urls[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
-                  category={listing.categories?.name_en || 'Uncategorized'}
+                  price={`CHF ${listing.price?.toLocaleString() || '0'}`}
+                  location={listing.location || 'Unbekannt'}
+                  imageUrl={listing.images?.[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
+                  category="Allgemein"
                 />
               ))}
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">No listings available yet.</p>
+              <p className="text-muted-foreground">Noch keine Anzeigen verfügbar.</p>
+              {user && (
+                <Button 
+                  className="mt-4"
+                  onClick={() => navigate('/create-listing')}
+                >
+                  Erste Anzeige erstellen
+                </Button>
+              )}
             </div>
           )}
         </div>
