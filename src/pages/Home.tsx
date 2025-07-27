@@ -65,12 +65,19 @@ export const Home = () => {
                 key={category.id}
                 variant="outline"
                 onClick={() => navigate(`/category/${category.id}`)}
-                className="h-auto p-3 flex-col space-y-2 min-h-[120px] text-center relative"
+                className="h-auto p-4 flex flex-col items-center justify-center gap-3 min-h-[140px] max-w-full"
               >
-                <div className="text-2xl">{category.icon}</div>
-                <span className="text-xs font-medium leading-tight text-center w-full break-words hyphens-auto px-1" style={{wordBreak: 'break-word', overflowWrap: 'anywhere'}}>
-                  {category.name[currentLanguage]}
-                </span>
+                <div className="text-3xl flex-shrink-0">{category.icon}</div>
+                <div className="flex flex-col items-center gap-1 w-full overflow-hidden">
+                  <span className="text-sm font-bold leading-tight text-center line-clamp-2 break-words max-w-full">
+                    {category.name[currentLanguage].split(' ')[0]}
+                  </span>
+                  {category.name[currentLanguage].split(' ').length > 1 && (
+                    <span className="text-xs text-muted-foreground leading-tight text-center line-clamp-2 break-words max-w-full">
+                      {category.name[currentLanguage].split(' ').slice(1).join(' ')}
+                    </span>
+                  )}
+                </div>
               </Button>
             ))}
           </div>
