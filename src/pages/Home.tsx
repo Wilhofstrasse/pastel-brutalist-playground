@@ -49,7 +49,7 @@ export const Home = () => {
                 className="font-semibold"
                 onClick={() => navigate(user ? '/create-listing' : '/login')}
               >
-                {user ? t('profile.createListing') : t('auth.login')}
+                {user ? 'Anzeige erstellen' : 'Anmelden'}
               </Button>
               <Button 
                 size="lg" 

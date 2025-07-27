@@ -155,7 +155,7 @@ export const Navbar = () => {
               <Link to="/login">
                 <Button variant="outline" className="font-semibold">
                   <User className="h-4 w-4 mr-2" />
-                  {t('auth.login')}
+                  Anmelden
                 </Button>
               </Link>
             )}
@@ -238,7 +238,7 @@ export const Navbar = () => {
                 <Link to="/login" className="block">
                   <Button variant="outline" className="w-full justify-start font-semibold">
                     <User className="h-4 w-4 mr-2" />
-                    {t('auth.login')}
+                    Anmelden
                   </Button>
                 </Link>
               )}
