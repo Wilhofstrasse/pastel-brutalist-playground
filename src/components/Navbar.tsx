@@ -92,7 +92,10 @@ export const Navbar = () => {
 
             {/* Auth Navigation */}
             {user ? (
-              <>
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-muted-foreground">
+                  Hallo, {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                </span>
                 <Link to="/create-listing">
                   <Button variant="default" className="font-semibold">
                     <Plus className="h-4 w-4 mr-2" />
@@ -111,7 +114,7 @@ export const Navbar = () => {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </>
+              </div>
             ) : (
               <Link to="/login">
                 <Button variant="outline" className="font-semibold">

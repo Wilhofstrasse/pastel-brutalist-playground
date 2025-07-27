@@ -82,15 +82,21 @@ export const Profile = () => {
               </div>
               
               <div className="flex flex-col sm:flex-row gap-3">
+                <Link to="/profile/edit">
+                  <Button variant="outline" className="font-bold">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Profil bearbeiten
+                  </Button>
+                </Link>
                 <Link to="/create-listing">
                   <Button variant="bright" className="font-bold">
                     <Plus className="h-4 w-4 mr-2" />
-                    Create Listing
+                    Anzeige erstellen
                   </Button>
                 </Link>
                 <Button variant="outline" className="font-bold" onClick={handleSignOut}>
                   <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
+                  Abmelden
                 </Button>
               </div>
             </div>
@@ -117,9 +123,9 @@ export const Profile = () => {
           </TabsList>
 
           <TabsContent value="my-listings" className="space-y-6">
-            <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between">
               <h2 className="text-2xl font-black text-foreground font-lexend">
-                {t('profile.myListings')}
+                Meine Anzeigen
               </h2>
               <Link to="/create-listing">
                 <Button variant="bright" className="font-bold">
@@ -158,15 +164,15 @@ export const Profile = () => {
                 <CardContent className="p-12 text-center">
                   <Package className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-xl font-black mb-2 font-lexend">
-                    No listings yet
+                    Noch keine Anzeigen
                   </h3>
                   <p className="text-muted-foreground mb-6">
-                    Create your first listing to start selling on our marketplace.
+                    Erstellen Sie Ihre erste Anzeige, um auf unserem Marktplatz zu verkaufen.
                   </p>
                   <Link to="/create-listing">
                     <Button variant="bright" className="font-bold">
                       <Plus className="h-4 w-4 mr-2" />
-                      Create Your First Listing
+                      Erste Anzeige erstellen
                     </Button>
                   </Link>
                 </CardContent>
@@ -176,7 +182,7 @@ export const Profile = () => {
 
           <TabsContent value="saved-listings" className="space-y-6">
             <h2 className="text-2xl font-black text-foreground font-lexend">
-              {t('profile.savedListings')}
+              Gespeicherte Anzeigen
             </h2>
             
             {savedListingsLoading ? (
@@ -209,10 +215,10 @@ export const Profile = () => {
                 <CardContent className="p-12 text-center">
                   <Heart className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-xl font-black mb-2 font-lexend">
-                    No saved listings
+                    Keine gespeicherten Anzeigen
                   </h3>
                   <p className="text-muted-foreground">
-                    Items you save will appear here for easy access later.
+                    Artikel, die Sie speichern, erscheinen hier für späteren Zugriff.
                   </p>
                 </CardContent>
               </Card>

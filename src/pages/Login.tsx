@@ -27,14 +27,14 @@ export const Login = () => {
         
         <div className="text-center space-y-2">
           <p className="text-muted-foreground">
-            {mode === 'signin' ? "Don't have an account?" : 'Already have an account?'}
+            {mode === 'signin' ? "Noch kein Konto?" : 'Bereits ein Konto?'}
           </p>
           <Button
             variant="ghost"
             onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
-            className="font-bold"
+            className="font-bold text-lg underline"
           >
-            {mode === 'signin' ? 'Sign up here' : 'Sign in here'}
+            {mode === 'signin' ? 'Hier registrieren' : 'Hier anmelden'}
           </Button>
         </div>
       </div>

@@ -8,6 +8,7 @@ import { ListingDetail } from "./pages/ListingDetail";
 import { Profile } from "./pages/Profile";
 import { Login } from "./pages/Login";
 import { CreateListing } from "./pages/CreateListing";
+import { EditProfile } from "./pages/EditProfile";
 import { Category } from "./pages/Category";
 import { Search } from "./pages/Search";
 import NotFound from "./pages/NotFound";
@@ -32,6 +33,7 @@ const App = () => (
               <Route path="/category/:categoryId" element={<Category />} />
               <Route path="/search" element={<Search />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/edit" element={<EditProfile />} />
               <Route path="/login" element={<Login />} />
               <Route path="/create-listing" element={<CreateListing />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

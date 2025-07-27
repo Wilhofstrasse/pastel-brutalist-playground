@@ -162,7 +162,7 @@ export const CreateListing = () => {
                   <FormItem>
                     <FormLabel>Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="iPhone 15 Pro Max - Like new" {...field} />
+                      <Input placeholder="z.B. Gebrauchtes Fahrrad in gutem Zustand" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -177,7 +177,7 @@ export const CreateListing = () => {
                     <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Describe your item in detail..."
+                        placeholder="Beschreiben Sie Ihren Artikel detailliert..."
                         className="min-h-[100px]"
                         {...field} 
                       />
@@ -219,7 +219,11 @@ export const CreateListing = () => {
                     <FormItem>
                       <FormLabel>Location</FormLabel>
                       <FormControl>
-                        <Input placeholder="Zürich" {...field} />
+                        <Input 
+                          placeholder="z.B. Zürich, Basel, Bern..." 
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.value)}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

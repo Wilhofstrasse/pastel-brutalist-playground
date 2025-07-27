@@ -35,6 +35,8 @@ export interface Profile {
   email: string;
   full_name: string;
   avatar_url?: string;
+  phone?: string;
+  bio?: string;
   created_at: string;
   updated_at: string;
 }
@@ -156,10 +158,16 @@ export const signIn = async (email: string, password: string) => {
 export const signOut = async () => {
   if (!supabase) {
     localStorage.removeItem('demo_user');
+    // Trigger page reload to reset auth state
+    window.location.href = '/';
     return { error: null };
   }
 
   const { error } = await supabase.auth.signOut();
+  if (!error) {
+    // Redirect to homepage after successful signout
+    window.location.href = '/';
+  }
   return { error };
 };
 
