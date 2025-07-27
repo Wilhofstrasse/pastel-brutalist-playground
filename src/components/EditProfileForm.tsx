@@ -131,7 +131,7 @@ export const EditProfileForm = () => {
               Sie müssen angemeldet sein, um Ihr Profil zu bearbeiten.
             </p>
             <Link to="/login">
-              <Button>{t('auth.login')}</Button>
+              <Button>Anmelden</Button>
             </Link>
           </CardContent>
         </Card>

@@ -194,7 +194,7 @@ export const EditListing = () => {
               Sie müssen angemeldet sein, um eine Anzeige zu bearbeiten.
             </p>
             <Link to="/login">
-              <Button>{t('auth.login')}</Button>
+              <Button>Anmelden</Button>
             </Link>
           </CardContent>
         </Card>

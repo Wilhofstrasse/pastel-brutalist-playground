@@ -56,9 +56,29 @@ export const getAdminStats = async (): Promise<AdminStats> => {
 };
 
 export const getAllUsers = async (): Promise<AdminUser[]> => {
-  const { data, error } = await supabase.rpc('get_users_with_email');
-  if (error) throw error;
-  return (data as AdminUser[]) || [];
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, user_id, full_name, phone, created_at')
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      return [];
+    }
+    
+    // Transform to match AdminUser interface, using phone as email placeholder
+    return data.map(profile => ({
+      id: profile.id,
+      email: profile.phone || 'No email', // Placeholder since email is not in profiles
+      full_name: profile.full_name || 'Unknown',
+      phone: profile.phone,
+      role: 'user', // Default role
+      created_at: profile.created_at
+    })) as AdminUser[];
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return [];
+  }
 };
 
 export const getAllListings = async (): Promise<AdminListing[]> => {

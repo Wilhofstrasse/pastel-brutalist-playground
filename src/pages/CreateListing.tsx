@@ -139,7 +139,7 @@ export const CreateListing = () => {
               Sie müssen angemeldet sein, um eine Anzeige zu erstellen.
             </p>
             <Link to="/login">
-              <Button>{t('auth.login')}</Button>
+              <Button>Anmelden</Button>
             </Link>
           </CardContent>
         </Card>
