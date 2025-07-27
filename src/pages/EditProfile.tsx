@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { updateProfile, uploadImage } from '@/lib/supabase';
+import { updateProfile, uploadImage } from '@/lib/marketplace';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Upload, User } from 'lucide-react';
@@ -56,20 +56,16 @@ export const EditProfile = () => {
 
       // Upload profile image if selected
       if (profileImage) {
-        const { data: uploadData, error: uploadError } = await uploadImage(profileImage);
-        if (uploadError) throw uploadError;
-        avatarUrl = uploadData?.publicUrl;
+        avatarUrl = await uploadImage(profileImage, 'avatars');
       }
 
       // Update profile
-      const { error } = await updateProfile(user.id, {
+      await updateProfile(user.id, {
         full_name: data.fullName,
         phone: data.phone,
         bio: data.bio,
         avatar_url: avatarUrl,
       });
-
-      if (error) throw error;
 
       toast({
         title: 'Profil aktualisiert',

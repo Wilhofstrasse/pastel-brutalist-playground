@@ -197,15 +197,15 @@ export const Profile = () => {
               </div>
             ) : savedListings.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {savedListings.map((savedListing) => (
+                {savedListings.map((listing) => (
                   <ListingCard
-                    key={savedListing.id}
-                    id={savedListing.listings!.id}
-                    title={savedListing.listings!.title}
-                    price={`${savedListing.listings!.currency} ${savedListing.listings!.price.toLocaleString()}`}
-                    location={savedListing.listings!.location}
-                    imageUrl={savedListing.listings!.image_urls[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
-                    category={savedListing.listings!.categories?.name_en || 'Uncategorized'}
+                    key={listing.id}
+                    id={listing.id}
+                    title={listing.title}
+                    price={`CHF ${listing.price?.toLocaleString() || '0'}`}
+                    location={listing.location || 'Unbekannt'}
+                    imageUrl={listing.images?.[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
+                    category="Allgemein"
                     isFavorited={true}
                   />
                 ))}
