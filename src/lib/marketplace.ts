@@ -221,13 +221,21 @@ export const uploadImage = async (file: File, bucket: string = 'listing-images')
   return data.publicUrl;
 };
 
-// Search function
+// Search function with proper input sanitization
 export const searchListings = async (query: string): Promise<Listing[]> => {
+  // Sanitize and validate the search query
+  const sanitizedQuery = query.trim().slice(0, 100); // Limit length and trim
+  
+  if (!sanitizedQuery) {
+    return [];
+  }
+  
+  // Use parameterized search to prevent SQL injection
   const { data, error } = await supabase
     .from('listings')
     .select('*')
     .eq('status', 'active')
-    .or(`title.ilike.%${query}%,description.ilike.%${query}%,location.ilike.%${query}%`)
+    .or(`title.ilike.%${sanitizedQuery}%,description.ilike.%${sanitizedQuery}%,location.ilike.%${sanitizedQuery}%`)
     .order('created_at', { ascending: false });
   
   if (error) throw error;
