@@ -17,7 +17,7 @@ export const Footer = () => {
               <span className="ml-3 text-xl font-black">filipeandrade.com</span>
             </div>
             <p className="text-muted-foreground max-w-md">
-              Der führende Marktplatz in der Schweiz. Kaufen und verkaufen Sie alles von Elektronik bis hin zu Immobilien.
+              Ihre vertrauensvolle Plattform für hochwertige Produkte und Dienstleistungen. Entdecken Sie einzigartige Angebote von Filipe Andrade.
             </p>
           </div>
 
@@ -73,7 +73,7 @@ export const Footer = () => {
 
         <div className="border-t border-border mt-8 pt-8 text-center">
           <p className="text-muted-foreground">
-            © 2024 filipeandrade.com. Alle Rechte vorbehalten.
+            © {new Date().getFullYear()} Filipe Andrade. Alle Rechte vorbehalten.
           </p>
         </div>
       </div>

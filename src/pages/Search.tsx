@@ -125,22 +125,24 @@ export const Search = () => {
           </div>
         ) : (
           <div className="text-center py-12 border border-border bg-muted rounded-lg">
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-2xl font-bold mb-2">{t('homepage.noListings')}</h3>
-            <p className="text-muted-foreground mb-6">
+            <div className="w-16 h-16 mx-auto mb-4 bg-muted-foreground/10 rounded-full flex items-center justify-center">
+              <SearchIcon className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-2xl font-bold mb-2">Keine Ergebnisse gefunden</h3>
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               {searchQuery 
-                ? `Keine Anzeigen für "${searchQuery}" gefunden. Versuchen Sie andere Suchbegriffe.`
+                ? `Keine Anzeigen für "${searchQuery}" gefunden. Versuchen Sie andere Suchbegriffe oder durchsuchen Sie unsere Kategorien.`
                 : "Geben Sie einen Suchbegriff ein, um Anzeigen zu finden."
               }
             </p>
             <div className="space-x-4">
               {searchQuery && (
-                <Button onClick={() => setSearchQuery('')} variant="outline">
+                <Button onClick={() => {setSearchQuery(''); navigate('/search');}} variant="outline">
                   Suche löschen
                 </Button>
               )}
-              <Button onClick={() => navigate('/')} variant="default">
-                Alle Kategorien durchsuchen
+              <Button onClick={() => navigate('/category/electronics-technology')} variant="default">
+                Kategorien durchsuchen
               </Button>
             </div>
           </div>

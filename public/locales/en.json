@@ -54,5 +54,11 @@
     "forgotPassword": "Forgot password?",
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?"
+  },
+  "search": {
+    "noResults": "No results found",
+    "noResultsDescription": "Try different search terms or browse our categories",
+    "clearSearch": "Clear search",
+    "browseCategories": "Browse categories"
   }
 }

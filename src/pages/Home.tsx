@@ -32,10 +32,10 @@ export const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
           <div className="text-center space-y-8">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-foreground">
-              {t('homepage.title')}
+              Filipe Andrade
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {t('homepage.subtitle')}
+              Entdecken Sie hochwertige Produkte und einzigartige Angebote auf unserer vertrauensvollen Plattform
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
               <Button 
@@ -44,7 +44,7 @@ export const Home = () => {
                 className="font-semibold"
                 onClick={() => navigate(user ? '/create-listing' : '/login')}
               >
-                {user ? 'Anzeige erstellen' : 'Jetzt anmelden'}
+                {user ? 'Anzeige erstellen' : 'Anmelden'}
               </Button>
               <Button 
                 size="lg" 
@@ -70,7 +70,7 @@ export const Home = () => {
               <Button
                 key={category.id}
                 variant="outline"
-                onClick={() => navigate(`/category/${category.slug}`)}
+                onClick={() => navigate(`/category/${category.id}`)}
                 className="h-auto p-4 flex flex-col items-center justify-center gap-3 min-h-[140px] max-w-full"
               >
                 <div className="text-3xl flex-shrink-0">📦</div>

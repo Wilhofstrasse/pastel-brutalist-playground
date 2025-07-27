@@ -152,7 +152,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
                 <FormItem>
                   <FormLabel>E-Mail</FormLabel>
                   <FormControl>
-                    <Input placeholder="z.B. max@beispiel.com" type="email" {...field} />
+                    <Input placeholder="z.B. ihre.email@beispiel.com" type="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

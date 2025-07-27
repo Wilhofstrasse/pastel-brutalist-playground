@@ -19,7 +19,7 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 210 22% 22%;
 
-    --primary: 210 100% 40%; /* Professional blue primary */
+    --primary: 210 100% 35%; /* Professional blue primary with better contrast */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 210 17% 94%; /* Light blue-gray secondary */

@@ -54,5 +54,11 @@
     "forgotPassword": "Passwort vergessen?",
     "noAccount": "Noch kein Konto?",
     "hasAccount": "Bereits ein Konto?"
+  },
+  "search": {
+    "noResults": "Keine Ergebnisse gefunden",
+    "noResultsDescription": "Versuchen Sie andere Suchbegriffe oder durchsuchen Sie unsere Kategorien",
+    "clearSearch": "Suche löschen",
+    "browseCategories": "Kategorien durchsuchen"
   }
 }
