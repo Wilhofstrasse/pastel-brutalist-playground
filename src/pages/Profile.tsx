@@ -8,13 +8,15 @@ import { ListingActions } from '@/components/ListingActions';
 import { useAuth } from '@/hooks/useAuth';
 import { getUserListings, getSavedListings, signOut } from '@/lib/marketplace';
 import { useQuery } from '@tanstack/react-query';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
 export const Profile = () => {
   const { t } = useTranslation();
   const { user, loading } = useAuth();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'my-listings';
 
   const userListingsQuery = useQuery({
     queryKey: ['user-listings', user?.id],
@@ -107,7 +109,7 @@ export const Profile = () => {
         </Card>
 
         {/* Profile Tabs */}
-        <Tabs defaultValue="my-listings" className="space-y-6">
+        <Tabs value={activeTab} className="space-y-6">
           <TabsList className="bg-background border-2 border-black shadow-brutalist">
             <TabsTrigger 
               value="my-listings" 
@@ -159,6 +161,7 @@ export const Profile = () => {
                       location={listing.location || 'Unbekannt'}
                       imageUrl={listing.images?.[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
                       category="Allgemein"
+                      showSaveButton={false}
                     />
                     <ListingActions 
                       listingId={listing.id} 
@@ -215,6 +218,7 @@ export const Profile = () => {
                     imageUrl={listing.images?.[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
                     category="Allgemein"
                     isFavorited={true}
+                    showSaveButton={true}
                   />
                 ))}
               </div>

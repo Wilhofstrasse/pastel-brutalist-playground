@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Heart, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { SavedListingButton } from './SavedListingButton';
 
 interface ListingCardProps {
   id: string;
@@ -11,6 +12,7 @@ interface ListingCardProps {
   imageUrl: string;
   category: string;
   isFavorited?: boolean;
+  showSaveButton?: boolean;
 }
 
 export const ListingCard = ({ 
@@ -20,7 +22,8 @@ export const ListingCard = ({
   location, 
   imageUrl, 
   category,
-  isFavorited = false 
+  isFavorited = false,
+  showSaveButton = true
 }: ListingCardProps) => {
   return (
     <Card className="bg-card border border-border hover:shadow-lg transition-all duration-200 overflow-hidden h-full">
@@ -34,15 +37,11 @@ export const ListingCard = ({
             />
           </div>
         </Link>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className={`absolute top-3 right-3 bg-background/95 hover:bg-background shadow-sm rounded-full ${
-            isFavorited ? 'text-red-500' : 'text-muted-foreground'
-          }`}
-        >
-          <Heart className={`h-4 w-4 ${isFavorited ? 'fill-current' : ''}`} />
-        </Button>
+        {showSaveButton && (
+          <div className="absolute top-3 right-3 bg-background/95 hover:bg-background shadow-sm rounded-full">
+            <SavedListingButton listingId={id} />
+          </div>
+        )}
       </div>
       
       <CardContent className="p-4 flex flex-col h-full">

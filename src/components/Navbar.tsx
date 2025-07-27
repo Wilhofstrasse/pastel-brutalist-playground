@@ -10,7 +10,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { categories } from '@/data/categories';
+import { getCategories } from '@/lib/marketplace';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 
 export const Navbar = () => {
@@ -21,6 +22,11 @@ export const Navbar = () => {
   const { user } = useAuth();
 
   const currentLanguage = i18n.language.startsWith('de') ? 'de' : 'en';
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: getCategories,
+  });
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,7 +89,7 @@ export const Navbar = () => {
                       to={`/category/${category.id}`} 
                       className="w-full flex items-center py-2"
                     >
-                      {category.name[currentLanguage]}
+                      {category.name}
                     </Link>
                   </DropdownMenuItem>
                 ))}
@@ -110,7 +116,22 @@ export const Navbar = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-background border border-border shadow-lg rounded-md z-50">
                     <DropdownMenuItem>
-                      <Link to="/profile">{t('common.profile')}</Link>
+                      <Link to="/profile" className="w-full">{t('common.profile')}</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link to="/profile?tab=saved-listings" className="w-full">Gespeicherte Anzeigen</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="text-destructive cursor-pointer" 
+                      onClick={async () => {
+                        try {
+                          await import('@/lib/marketplace').then(({ signOut }) => signOut());
+                        } catch (error) {
+                          console.error('Logout error:', error);
+                        }
+                      }}
+                    >
+                      Abmelden
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

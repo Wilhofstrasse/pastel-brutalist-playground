@@ -1,39 +1,54 @@
-import { useParams, Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useParams, Link, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Heart, Share2, Flag, MapPin, Calendar, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { useQuery } from '@tanstack/react-query';
+import { getListing, getProfile } from '@/lib/marketplace';
+import { SavedListingButton } from '@/components/SavedListingButton';
 
 export const ListingDetail = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Mock listing data - in real app, fetch based on id
-  const listing = {
-    id: '1',
-    title: 'iPhone 15 Pro Max - Wie neu',
-    price: 'CHF 1,200',
-    location: 'Zürich',
-    description: 'Verkaufe mein iPhone 15 Pro Max in ausgezeichnetem Zustand. Das Gerät wurde immer mit Hülle und Panzerglas verwendet. Originalverpackung und Zubehör sind vorhanden. Akku-Zustand: 98%. Keine Kratzer oder Beschädigungen.',
-    images: [
-      'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&h=600&fit=crop'
-    ],
-    category: 'Elektronik & Technik',
-    postedDate: '2024-01-15',
-    seller: {
-      name: 'Max Mustermann',
-      rating: 4.8,
-      responseTime: '< 1 Stunde'
-    },
-    specifications: {
-      'Speicher': '256 GB',
-      'Farbe': 'Space Black',
-      'Zustand': 'Wie neu',
-      'Garantie': 'Bis März 2025'
-    }
+  const { data: listing, isLoading, error } = useQuery({
+    queryKey: ['listing', id],
+    queryFn: () => getListing(id!),
+    enabled: !!id,
+  });
+
+  const { data: profile } = useQuery({
+    queryKey: ['profile', listing?.user_id],
+    queryFn: () => getProfile(listing!.user_id),
+    enabled: !!listing?.user_id,
+  });
+
+  if (!id) {
+    return <Navigate to="/404" replace />;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (error || !listing) {
+    return <Navigate to="/404" replace />;
+  }
+
+  const images = listing.images && listing.images.length > 0 
+    ? listing.images 
+    : ['https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=600&fit=crop'];
+
+  const seller = {
+    name: profile?.full_name || 'Benutzer',
+    memberSince: new Date(profile?.created_at || listing.created_at).getFullYear().toString()
   };
 
   return (
@@ -54,26 +69,42 @@ export const ListingDetail = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Image Gallery */}
             <Card className="bg-background border-2 border-black shadow-brutalist overflow-hidden">
-              <div className="aspect-[4/3] bg-mint">
+              <div className="aspect-[4/3] bg-mint relative">
                 <img 
-                  src={listing.images[0]} 
+                  src={images[currentImageIndex]} 
                   alt={listing.title}
                   className="w-full h-full object-cover"
                 />
-              </div>
-              <CardContent className="p-4">
-                <div className="flex gap-2 overflow-x-auto">
-                  {listing.images.slice(1).map((image, index) => (
-                    <div key={index} className="flex-shrink-0 w-20 h-20 border-2 border-black">
-                      <img 
-                        src={image} 
-                        alt={`${listing.title} ${index + 2}`}
-                        className="w-full h-full object-cover cursor-pointer hover:opacity-80"
-                      />
-                    </div>
-                  ))}
+                <div className="absolute top-4 right-4">
+                  <SavedListingButton 
+                    listingId={listing.id} 
+                    className="bg-background/95 hover:bg-background shadow-sm h-10 w-10"
+                  />
                 </div>
-              </CardContent>
+              </div>
+              {images.length > 1 && (
+                <CardContent className="p-4">
+                  <div className="flex gap-2 overflow-x-auto">
+                    {images.map((image, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentImageIndex(index)}
+                        className={`flex-shrink-0 w-20 h-20 border-2 overflow-hidden ${
+                          currentImageIndex === index 
+                            ? 'border-primary' 
+                            : 'border-black'
+                        }`}
+                      >
+                        <img 
+                          src={image} 
+                          alt={`${listing.title} ${index + 1}`}
+                          className="w-full h-full object-cover cursor-pointer hover:opacity-80"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              )}
             </Card>
 
             {/* Title and Price */}
@@ -81,16 +112,13 @@ export const ListingDetail = () => {
               <div className="flex items-start justify-between">
                 <div>
                   <div className="text-sm font-semibold text-primary uppercase tracking-wide mb-2">
-                    {listing.category}
+                    {listing.category_id || 'Allgemein'}
                   </div>
                   <h1 className="text-3xl font-black text-foreground font-lexend">
                     {listing.title}
                   </h1>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="icon" className="bg-background">
-                    <Heart className="h-5 w-5" />
-                  </Button>
                   <Button variant="ghost" size="icon" className="bg-background">
                     <Share2 className="h-5 w-5" />
                   </Button>
@@ -101,14 +129,14 @@ export const ListingDetail = () => {
               </div>
               
               <div className="text-4xl font-black text-foreground">
-                {listing.price}
+                CHF {listing.price?.toLocaleString() || '0'}
               </div>
               
               <div className="flex items-center text-muted-foreground">
                 <MapPin className="h-4 w-4 mr-2" />
-                {listing.location}
+                {listing.location || 'Unbekannt'}
                 <Calendar className="h-4 w-4 ml-4 mr-2" />
-                {listing.postedDate}
+                {new Date(listing.created_at).toLocaleDateString('de-DE')}
               </div>
             </div>
 
@@ -118,24 +146,11 @@ export const ListingDetail = () => {
                 <h2 className="text-xl font-black mb-4 font-lexend">
                   {t('common.description')}
                 </h2>
-                <p className="text-foreground leading-relaxed font-public">
-                  {listing.description}
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Specifications */}
-            <Card className="bg-background border-2 border-black shadow-brutalist">
-              <CardContent className="p-6">
-                <h2 className="text-xl font-black mb-4 font-lexend">
-                  {t('common.details')}
-                </h2>
-                <div className="space-y-3">
-                  {Object.entries(listing.specifications).map(([key, value]) => (
-                    <div key={key} className="flex justify-between py-2">
-                      <span className="font-bold text-muted-foreground">{key}:</span>
-                      <span className="text-foreground">{value}</span>
-                    </div>
+                <div className="prose prose-sm max-w-none">
+                  {(listing.description || 'Keine Beschreibung verfügbar.').split('\n').map((paragraph, index) => (
+                    <p key={index} className="mb-4 last:mb-0 text-foreground leading-relaxed font-public">
+                      {paragraph}
+                    </p>
                   ))}
                 </div>
               </CardContent>
@@ -157,9 +172,9 @@ export const ListingDetail = () => {
                       <User className="h-6 w-6" />
                     </div>
                     <div>
-                      <div className="font-bold">{listing.seller.name}</div>
+                      <div className="font-bold">{seller.name}</div>
                       <div className="text-sm text-muted-foreground">
-                        ⭐ {listing.seller.rating} • {listing.seller.responseTime}
+                        Mitglied seit {seller.memberSince}
                       </div>
                     </div>
                   </div>
@@ -167,11 +182,13 @@ export const ListingDetail = () => {
                   <Separator className="bg-black h-0.5" />
                   
                   <div className="space-y-3">
-                    <Button variant="bright" className="w-full font-bold">
+                    <Button variant="bright" className="w-full font-bold" disabled>
                       Nachricht senden
+                      <span className="text-xs block">(Demnächst verfügbar)</span>
                     </Button>
-                    <Button variant="outline" className="w-full font-bold">
+                    <Button variant="outline" className="w-full font-bold" disabled>
                       Telefonnummer anzeigen
+                      <span className="text-xs block">(Demnächst verfügbar)</span>
                     </Button>
                   </div>
                 </div>
