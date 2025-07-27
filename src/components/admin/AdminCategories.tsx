@@ -24,9 +24,12 @@ interface Category {
 }
 
 const categorySchema = z.object({
-  name: z.string().min(1, 'Name ist erforderlich'),
+  name: z.string().min(1, 'Name ist erforderlich').max(100, 'Name ist zu lang'),
   description: z.string().optional(),
-  slug: z.string().min(1, 'Slug ist erforderlich')
+  slug: z.string()
+    .min(1, 'Slug ist erforderlich')
+    .max(50, 'Slug ist zu lang')
+    .regex(/^[a-z0-9-]+$/, 'Slug darf nur Kleinbuchstaben, Zahlen und Bindestriche enthalten')
 });
 
 export function AdminCategories() {
@@ -73,13 +76,37 @@ export function AdminCategories() {
 
   const onSubmit = async (values: z.infer<typeof categorySchema>) => {
     try {
+      // Validate slug format with server-side validation
+      const { data: validSlug, error: slugError } = await supabase
+        .rpc('validate_category_slug', { slug_input: values.slug });
+
+      if (slugError || !validSlug) {
+        throw new Error('Ungültiges Slug-Format');
+      }
+
+      // Check for duplicate slug (excluding current category if editing)
+      const { data: existingCategory, error: duplicateError } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('slug', values.slug)
+        .neq('id', editingCategory?.id || '')
+        .single();
+
+      if (duplicateError && duplicateError.code !== 'PGRST116') {
+        throw duplicateError;
+      }
+
+      if (existingCategory) {
+        throw new Error('Slug bereits vergeben');
+      }
+
       if (editingCategory) {
         const { error } = await supabase
           .from('categories')
           .update({
-            name: values.name,
-            description: values.description || null,
-            slug: values.slug
+            name: values.name.trim(),
+            description: values.description?.trim() || null,
+            slug: values.slug.toLowerCase().trim()
           })
           .eq('id', editingCategory.id);
 
@@ -94,9 +121,9 @@ export function AdminCategories() {
         const { error } = await supabase
           .from('categories')
           .insert({
-            name: values.name,
-            description: values.description || null,
-            slug: values.slug
+            name: values.name.trim(),
+            description: values.description?.trim() || null,
+            slug: values.slug.toLowerCase().trim()
           });
 
         if (error) throw error;
@@ -112,11 +139,11 @@ export function AdminCategories() {
       setEditingCategory(null);
       form.reset();
       fetchCategories();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving category:', error);
       toast({
         title: 'Fehler',
-        description: 'Kategorie konnte nicht gespeichert werden.',
+        description: error.message || 'Kategorie konnte nicht gespeichert werden.',
         variant: 'destructive'
       });
     }
@@ -134,6 +161,23 @@ export function AdminCategories() {
 
   const handleDelete = async (categoryId: string) => {
     try {
+      // Check if category can be safely deleted
+      const { data: canDelete, error: checkError } = await supabase
+        .rpc('can_delete_category', { category_id_input: categoryId });
+
+      if (checkError) {
+        throw new Error('Fehler beim Prüfen der Kategorie');
+      }
+
+      if (!canDelete) {
+        toast({
+          title: 'Fehler',
+          description: 'Kategorie kann nicht gelöscht werden, da sie noch Anzeigen enthält.',
+          variant: 'destructive'
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from('categories')
         .delete()
@@ -149,11 +193,11 @@ export function AdminCategories() {
       });
       
       fetchCategories();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting category:', error);
       toast({
         title: 'Fehler',
-        description: 'Kategorie konnte nicht gelöscht werden.',
+        description: error.message || 'Kategorie konnte nicht gelöscht werden.',
         variant: 'destructive'
       });
     }

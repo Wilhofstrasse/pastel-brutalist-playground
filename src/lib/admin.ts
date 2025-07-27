@@ -103,6 +103,23 @@ export const updateListingModerationStatus = async (
   status: 'approved' | 'rejected' | 'pending',
   moderatorId: string
 ) => {
+  // Input validation
+  if (!listingId || !status || !moderatorId) {
+    throw new Error('Listing ID, status, and moderator ID are required');
+  }
+
+  if (!['approved', 'rejected', 'pending'].includes(status)) {
+    throw new Error('Invalid moderation status');
+  }
+
+  // Validate listing exists
+  const { data: listingExists, error: validateError } = await supabase
+    .rpc('validate_listing_id', { listing_id_input: listingId });
+
+  if (validateError || !listingExists) {
+    throw new Error('Listing not found');
+  }
+
   const { error } = await supabase
     .from('listings')
     .update({
@@ -116,35 +133,78 @@ export const updateListingModerationStatus = async (
 };
 
 export const updateUserRole = async (userId: string, role: 'user' | 'admin' | 'moderator') => {
-  // First, delete existing role
-  await supabase
-    .from('user_roles')
-    .delete()
-    .eq('user_id', userId);
+  // Input validation
+  if (!userId || !role) {
+    throw new Error('User ID and role are required');
+  }
 
-  // Then insert new role
+  if (!['user', 'admin', 'moderator'].includes(role)) {
+    throw new Error('Invalid role specified');
+  }
+
+  // Validate user exists
+  const { data: userExists, error: validateError } = await supabase
+    .rpc('validate_user_id', { user_id_input: userId });
+
+  if (validateError || !userExists) {
+    throw new Error('User not found');
+  }
+
+  // Use upsert to avoid race condition
   const { error } = await supabase
     .from('user_roles')
-    .insert({
+    .upsert({
       user_id: userId,
       role
+    }, {
+      onConflict: 'user_id'
     });
 
   if (error) throw error;
 };
 
 export const deleteUser = async (userId: string) => {
-  // This should be handled by an edge function for proper cleanup
-  // For now, we'll just delete the profile
-  const { error } = await supabase
-    .from('profiles')
-    .delete()
-    .eq('user_id', userId);
+  // Input validation
+  if (!userId) {
+    throw new Error('User ID is required');
+  }
 
-  if (error) throw error;
+  // Validate user exists
+  const { data: userExists, error: validateError } = await supabase
+    .rpc('validate_user_id', { user_id_input: userId });
+
+  if (validateError || !userExists) {
+    throw new Error('User not found');
+  }
+
+  // Use edge function for secure user deletion
+  const { data, error } = await supabase.functions.invoke('delete-user', {
+    body: { userId }
+  });
+
+  if (error) {
+    throw new Error(error.message || 'Failed to delete user');
+  }
+
+  if (data?.error) {
+    throw new Error(data.error);
+  }
 };
 
 export const deleteListing = async (listingId: string) => {
+  // Input validation
+  if (!listingId) {
+    throw new Error('Listing ID is required');
+  }
+
+  // Validate listing exists
+  const { data: listingExists, error: validateError } = await supabase
+    .rpc('validate_listing_id', { listing_id_input: listingId });
+
+  if (validateError || !listingExists) {
+    throw new Error('Listing not found');
+  }
+
   const { error } = await supabase
     .from('listings')
     .delete()
