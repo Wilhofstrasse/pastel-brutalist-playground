@@ -143,7 +143,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle className="text-2xl font-black font-lexend">
-          {mode === 'signin' ? 'Anmelden' : 'Registrieren'}
+          {mode === 'signin' ? t('auth.login') : t('common.signUp')}
         </CardTitle>
         {mode === 'signup' && (
           <p className="text-sm text-muted-foreground mt-2">
@@ -320,7 +320,7 @@ export const AuthForm = ({ mode, onSuccess }: AuthFormProps) => {
             
             <Button type="submit" className="w-full" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {mode === 'signin' ? 'Anmelden' : 'Registrieren'}
+              {mode === 'signin' ? t('auth.login') : t('common.signUp')}
             </Button>
           </form>
         </Form>

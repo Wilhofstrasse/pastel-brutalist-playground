@@ -42,14 +42,14 @@ export const ListingActions = ({ listingId, onDelete }: ListingActionsProps) => 
 
   return (
     <div className="flex gap-2">
-      <Button onClick={handleEdit} variant="outline" size="sm">
+      <Button onClick={handleEdit} variant="outline" size="default" className="px-4 py-2">
         <Edit className="h-4 w-4 mr-2" />
         Bearbeiten
       </Button>
       
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="destructive" size="sm" disabled={deleting}>
+          <Button variant="destructive" size="default" className="px-4 py-2" disabled={deleting}>
             <Trash2 className="h-4 w-4 mr-2" />
             {deleting ? 'Lösche...' : 'Löschen'}
           </Button>

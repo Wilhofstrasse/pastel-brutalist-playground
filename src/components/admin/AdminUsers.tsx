@@ -99,6 +99,7 @@ export function AdminUsers() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
+              <TableHead>E-Mail</TableHead>
               <TableHead>Telefon</TableHead>
               <TableHead>Rolle</TableHead>
               <TableHead>Registriert</TableHead>
@@ -111,6 +112,7 @@ export function AdminUsers() {
                 <TableCell className="font-medium">
                   {user.full_name || 'Unbekannt'}
                 </TableCell>
+                <TableCell>{user.email}</TableCell>
                 <TableCell>{user.phone || '-'}</TableCell>
                 <TableCell>
                   <Badge variant={getRoleBadgeVariant(user.role)}>

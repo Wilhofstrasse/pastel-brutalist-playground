@@ -7,6 +7,7 @@ import { ListingCard } from '@/components/ListingCard';
 import { getListings } from '@/lib/marketplace';
 import { ArrowLeft, Search as SearchIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { toast } from '@/hooks/use-toast';
 
 export const Search = () => {
   const [searchParams] = useSearchParams();
@@ -36,9 +37,16 @@ export const Search = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    const trimmed = searchQuery.trim();
+    if (trimmed.length < 2) {
+      toast({
+        title: 'Fehler',
+        description: 'Bitte mindestens zwei Zeichen eingeben.',
+        variant: 'destructive',
+      });
+      return;
     }
+    navigate(`/search?q=${encodeURIComponent(trimmed)}`);
   };
 
   useEffect(() => {

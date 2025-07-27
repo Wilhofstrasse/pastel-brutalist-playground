@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import FocusTrap from 'focus-trap-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ChevronDown, User, Menu, X, Plus } from 'lucide-react';
@@ -19,13 +20,14 @@ export const Navbar = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const { user } = useAuth();
   const { isAdmin } = useAdmin();
 
   const currentLanguage = i18n.language.startsWith('de') ? 'de' : 'en';
 
-  const { data: categories = [] } = useQuery({
+  const { data: categories = [], isLoading: categoriesLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: getCategories,
   });
@@ -85,16 +87,22 @@ export const Navbar = () => {
                 <DropdownMenuItem className="font-semibold border-b border-border">
                   {t('common.allCategories')}
                 </DropdownMenuItem>
-                {categories.map((category) => (
-                  <DropdownMenuItem key={category.id} className="hover:bg-accent">
-                    <Link 
-                      to={`/category/${category.id}`} 
-                      className="w-full flex items-center py-2"
-                    >
-                      {category.name}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
+                {categoriesLoading
+                  ? [...Array(5)].map((_, i) => (
+                      <DropdownMenuItem key={i} className="animate-pulse">
+                        <span className="h-4 w-full bg-muted rounded" />
+                      </DropdownMenuItem>
+                    ))
+                  : categories.map((category) => (
+                      <DropdownMenuItem key={category.id} className="hover:bg-accent">
+                        <Link
+                          to={`/category/${category.id}`}
+                          className="w-full flex items-center py-2"
+                        >
+                          {category.name}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -107,7 +115,7 @@ export const Navbar = () => {
                 <Link to="/create-listing">
                   <Button variant="default" className="font-semibold">
                     <Plus className="h-4 w-4 mr-2" />
-                    Anzeige erstellen
+                    {t('profile.createListing')}
                   </Button>
                 </Link>
                 <DropdownMenu>
@@ -121,7 +129,7 @@ export const Navbar = () => {
                       <Link to="/profile" className="w-full">{t('common.profile')}</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                      <Link to="/profile?tab=saved-listings" className="w-full">Gespeicherte Anzeigen</Link>
+                    <Link to="/profile?tab=saved-listings" className="w-full">{t('profile.savedListings')}</Link>
                     </DropdownMenuItem>
                     {isAdmin && (
                       <DropdownMenuItem>
@@ -138,7 +146,7 @@ export const Navbar = () => {
                         }
                       }}
                     >
-                      Abmelden
+                      {t('common.logout')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -147,7 +155,7 @@ export const Navbar = () => {
               <Link to="/login">
                 <Button variant="outline" className="font-semibold">
                   <User className="h-4 w-4 mr-2" />
-                  Anmelden
+                  {t('auth.login')}
                 </Button>
               </Link>
             )}
@@ -155,9 +163,10 @@ export const Navbar = () => {
 
           {/* Mobile menu button */}
           <div className="lg:hidden">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
+              ref={menuButtonRef}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="bg-background"
             >
@@ -189,8 +198,24 @@ export const Navbar = () => {
 
         {/* Mobile menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t-2 border-black py-4">
-            <div className="space-y-2">
+          <FocusTrap
+            focusTrapOptions={{
+              onDeactivate: () => menuButtonRef.current?.focus(),
+              clickOutsideDeactivates: true,
+              escapeDeactivates: true,
+            }}
+          >
+            <div
+              className="lg:hidden border-t-2 border-black py-4"
+              tabIndex={-1}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  setIsMobileMenuOpen(false);
+                  menuButtonRef.current?.focus();
+                }
+              }}
+            >
+              <div className="space-y-2">
               <Button variant="ghost" className="w-full justify-start bg-background">
                 {t('common.categories')}
               </Button>
@@ -199,7 +224,7 @@ export const Navbar = () => {
                   <Link to="/create-listing" className="block">
                     <Button variant="default" className="w-full justify-start font-semibold">
                       <Plus className="h-4 w-4 mr-2" />
-                      Anzeige erstellen
+                      {t('profile.createListing')}
                     </Button>
                   </Link>
                   <Link to="/profile" className="block">
@@ -213,12 +238,13 @@ export const Navbar = () => {
                 <Link to="/login" className="block">
                   <Button variant="outline" className="w-full justify-start font-semibold">
                     <User className="h-4 w-4 mr-2" />
-                    Anmelden
+                    {t('auth.login')}
                   </Button>
                 </Link>
               )}
             </div>
           </div>
+          </FocusTrap>
         )}
       </div>
     </nav>

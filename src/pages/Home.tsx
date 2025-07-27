@@ -28,8 +28,13 @@ export const Home = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/5 to-primary/10 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <section className="relative bg-gradient-to-br from-primary/5 to-primary/10 border-b border-border overflow-hidden">
+        <img
+          src={heroImage}
+          alt="Marketplace hero"
+          className="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none"
+        />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
           <div className="text-center space-y-8">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-foreground">
               Filipe Andrade
@@ -38,13 +43,13 @@ export const Home = () => {
               Entdecken Sie hochwertige Produkte und einzigartige Angebote auf unserer vertrauensvollen Plattform
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-              <Button 
-                size="lg" 
-                variant="default" 
+              <Button
+                size="lg"
+                variant="default"
                 className="font-semibold"
                 onClick={() => navigate(user ? '/create-listing' : '/login')}
               >
-                {user ? 'Anzeige erstellen' : 'Anmelden'}
+                {user ? t('profile.createListing') : t('auth.login')}
               </Button>
               <Button 
                 size="lg" 

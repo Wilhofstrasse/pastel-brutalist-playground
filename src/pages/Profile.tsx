@@ -96,12 +96,12 @@ export const Profile = () => {
                 <Link to="/create-listing">
                   <Button variant="bright" className="font-bold">
                     <Plus className="h-4 w-4 mr-2" />
-                    Anzeige erstellen
+                    {t('profile.createListing')}
                   </Button>
                 </Link>
                 <Button variant="outline" className="font-bold" onClick={handleSignOut}>
                   <LogOut className="h-4 w-4 mr-2" />
-                  Abmelden
+                  {t('common.logout')}
                 </Button>
               </div>
             </div>
@@ -183,7 +183,7 @@ export const Profile = () => {
                   <Link to="/create-listing">
                     <Button variant="bright" className="font-bold">
                       <Plus className="h-4 w-4 mr-2" />
-                      Erste Anzeige erstellen
+                      {t('common.createFirstListing')}
                     </Button>
                   </Link>
                 </CardContent>
@@ -193,7 +193,7 @@ export const Profile = () => {
 
           <TabsContent value="saved-listings" className="space-y-6">
             <h2 className="text-2xl font-black text-foreground font-lexend">
-              Gespeicherte Anzeigen
+              {t('profile.savedListings')}
             </h2>
             
             {savedListingsLoading ? (
