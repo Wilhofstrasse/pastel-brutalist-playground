@@ -221,23 +221,37 @@ export const uploadImage = async (file: File, bucket: string = 'listing-images')
   return data.publicUrl;
 };
 
-// Search function with proper input sanitization
+// Search function with comprehensive security measures
 export const searchListings = async (query: string): Promise<Listing[]> => {
-  // Sanitize and validate the search query
-  const sanitizedQuery = query.trim().slice(0, 100); // Limit length and trim
+  // Input validation and sanitization
+  if (typeof query !== 'string') {
+    throw new Error('Search query must be a string');
+  }
   
-  if (!sanitizedQuery) {
+  // Remove potentially dangerous characters and limit length
+  const sanitizedQuery = query
+    .trim()
+    .replace(/[<>\"'%;()&+]/g, '') // Remove potentially dangerous characters
+    .slice(0, 50); // Reduced length limit for better security
+  
+  if (!sanitizedQuery || sanitizedQuery.length < 2) {
     return [];
   }
   
-  // Use parameterized search to prevent SQL injection
+  // Use Supabase's text search with proper escaping
   const { data, error } = await supabase
     .from('listings')
     .select('*')
     .eq('status', 'active')
-    .or(`title.ilike.%${sanitizedQuery}%,description.ilike.%${sanitizedQuery}%,location.ilike.%${sanitizedQuery}%`)
-    .order('created_at', { ascending: false });
+    .textSearch('title', sanitizedQuery, { type: 'websearch' })
+    .or(`description.ilike.%${sanitizedQuery}%,location.ilike.%${sanitizedQuery}%`)
+    .order('created_at', { ascending: false })
+    .limit(100); // Add result limit for performance and security
   
-  if (error) throw error;
+  if (error) {
+    console.error('Search error:', error);
+    throw new Error('Search failed');
+  }
+  
   return data || [];
 };
