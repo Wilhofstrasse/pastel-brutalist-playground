@@ -235,7 +235,23 @@ export const getListing = async (id: string) => {
 
 export const createListing = async (listing: Omit<Listing, 'id' | 'created_at' | 'updated_at' | 'user_id'>) => {
   if (!supabase) {
-    return { data: { id: Math.random().toString(36), ...listing }, error: null };
+    const user = JSON.parse(localStorage.getItem('demo_user') || '{}');
+    if (!user.id) throw new Error('User not authenticated');
+    
+    const newListing = {
+      id: Math.random().toString(36),
+      ...listing,
+      user_id: user.id,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+    
+    // Store in localStorage
+    const existingListings = JSON.parse(localStorage.getItem('demo_listings') || '[]');
+    existingListings.push(newListing);
+    localStorage.setItem('demo_listings', JSON.stringify(existingListings));
+    
+    return { data: newListing, error: null };
   }
 
   try {
@@ -266,7 +282,9 @@ export const createListing = async (listing: Omit<Listing, 'id' | 'created_at' |
 
 export const getUserListings = async (userId: string) => {
   if (!supabase) {
-    return { data: [], error: null };
+    const storedListings = JSON.parse(localStorage.getItem('demo_listings') || '[]');
+    const userListings = storedListings.filter((listing: any) => listing.user_id === userId);
+    return { data: userListings, error: null };
   }
 
   try {
