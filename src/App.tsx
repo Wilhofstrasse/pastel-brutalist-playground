@@ -10,6 +10,7 @@ import { Login } from "./pages/Login";
 import { CreateListing } from "./pages/CreateListing";
 import { EditProfile } from "./pages/EditProfile";
 import { EditListing } from "./pages/EditListing";
+import Admin from "./pages/Admin";
 import { Category } from "./pages/Category";
 import { Search } from "./pages/Search";
 import { About } from "./pages/About";
@@ -42,6 +43,7 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/create-listing" element={<CreateListing />} />
               <Route path="/edit-listing/:id" element={<EditListing />} />
+              <Route path="/admin" element={<Admin />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/terms" element={<Terms />} />

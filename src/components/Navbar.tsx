@@ -13,6 +13,7 @@ import {
 import { getCategories } from '@/lib/marketplace';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
+import { useAdmin } from '@/hooks/useAdmin';
 
 export const Navbar = () => {
   const { t, i18n } = useTranslation();
@@ -20,6 +21,7 @@ export const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
 
   const currentLanguage = i18n.language.startsWith('de') ? 'de' : 'en';
 
@@ -121,6 +123,11 @@ export const Navbar = () => {
                     <DropdownMenuItem>
                       <Link to="/profile?tab=saved-listings" className="w-full">Gespeicherte Anzeigen</Link>
                     </DropdownMenuItem>
+                    {isAdmin && (
+                      <DropdownMenuItem>
+                        <Link to="/admin" className="w-full">Admin Panel</Link>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem 
                       className="text-destructive cursor-pointer" 
                       onClick={async () => {
