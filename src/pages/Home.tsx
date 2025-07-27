@@ -65,10 +65,10 @@ export const Home = () => {
                 key={category.id}
                 variant="outline"
                 onClick={() => navigate(`/category/${category.id}`)}
-                className="h-auto p-4 flex-col space-y-2 min-h-[100px] text-center"
+                className="h-auto p-3 flex-col space-y-2 min-h-[120px] text-center relative"
               >
                 <div className="text-2xl">{category.icon}</div>
-                <span className="text-xs font-medium leading-tight">
+                <span className="text-xs font-medium leading-tight text-center w-full break-words hyphens-auto px-1" style={{wordBreak: 'break-word', overflowWrap: 'anywhere'}}>
                   {category.name[currentLanguage]}
                 </span>
               </Button>
