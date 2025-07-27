@@ -129,8 +129,11 @@ export const Navbar = () => {
                       <Link to="/profile" className="w-full">{t('common.profile')}</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                    <Link to="/profile?tab=saved-listings" className="w-full">{t('profile.savedListings')}</Link>
-                    </DropdownMenuItem>
+                     <Link to="/profile?tab=saved-listings" className="w-full">{t('profile.savedListings')}</Link>
+                     </DropdownMenuItem>
+                     <DropdownMenuItem>
+                       <Link to="/messages" className="w-full">Nachrichten</Link>
+                     </DropdownMenuItem>
                     {isAdmin && (
                       <DropdownMenuItem>
                         <Link to="/admin" className="w-full">Admin Panel</Link>

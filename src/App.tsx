@@ -17,6 +17,7 @@ import { About } from "./pages/About";
 import { Contact } from "./pages/Contact";
 import { Terms } from "./pages/Terms";
 import { Privacy } from "./pages/Privacy";
+import { Messages } from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
@@ -48,6 +49,7 @@ const App = () => (
               <Route path="/contact" element={<Contact />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/messages" element={<Messages />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
