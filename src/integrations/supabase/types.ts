@@ -235,6 +235,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_delete_category: {
+        Args: { category_id_input: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _user_id: string
@@ -244,6 +248,18 @@ export type Database = {
       }
       is_admin: {
         Args: { _user_id: string }
+        Returns: boolean
+      }
+      validate_category_slug: {
+        Args: { slug_input: string }
+        Returns: boolean
+      }
+      validate_listing_id: {
+        Args: { listing_id_input: string }
+        Returns: boolean
+      }
+      validate_user_id: {
+        Args: { user_id_input: string }
         Returns: boolean
       }
     }
