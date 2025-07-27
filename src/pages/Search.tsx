@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ListingCard } from '@/components/ListingCard';
-import { getListings } from '@/lib/supabase';
+import { getListings } from '@/lib/marketplace';
 import { ArrowLeft, Search as SearchIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -22,7 +22,7 @@ export const Search = () => {
   });
 
   // Filter listings by search query
-  const filteredListings = listingsData?.data?.filter(listing => {
+  const filteredListings = listingsData?.filter(listing => {
     if (!searchQuery.trim()) return true;
     
     const query = searchQuery.toLowerCase();
@@ -30,8 +30,7 @@ export const Search = () => {
       listing.title.toLowerCase().includes(query) ||
       listing.description.toLowerCase().includes(query) ||
       listing.location.toLowerCase().includes(query) ||
-      listing.categories?.name_en?.toLowerCase().includes(query) ||
-      listing.categories?.name_de?.toLowerCase().includes(query)
+      listing.category_id?.toLowerCase().includes(query)
     );
   }) || [];
 
@@ -117,10 +116,10 @@ export const Search = () => {
                 key={listing.id}
                 id={listing.id}
                 title={listing.title}
-                price={`${listing.currency} ${listing.price.toLocaleString()}`}
-                location={listing.location}
-                imageUrl={listing.image_urls[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
-                category={listing.categories?.name_en || 'Uncategorized'}
+                price={`CHF ${listing.price?.toLocaleString() || '0'}`}
+                location={listing.location || 'Unbekannt'}
+                imageUrl={listing.images?.[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
+                category="Allgemein"
               />
             ))}
           </div>

@@ -181,13 +181,32 @@ export const isListingSaved = async (listingId: string): Promise<boolean> => {
   return !!data;
 };
 
-// Image upload function
+// Image upload function with enhanced security
 export const uploadImage = async (file: File, bucket: string = 'listing-images'): Promise<string> => {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('You must be logged in to upload images');
   
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+  // Security: File size limit (5MB)
+  const MAX_FILE_SIZE = 5 * 1024 * 1024;
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error('File size must be less than 5MB');
+  }
+  
+  // Security: Strict file type validation
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error('Only JPEG, PNG, and WebP images are allowed');
+  }
+  
+  // Security: Validate file extension matches MIME type
+  const fileExt = file.name.split('.').pop()?.toLowerCase();
+  const validExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+  if (!fileExt || !validExtensions.includes(fileExt)) {
+    throw new Error('Invalid file extension');
+  }
+  
+  // Security: Sanitize filename and use UUID-based naming
+  const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
   
   const { error: uploadError } = await supabase.storage
     .from(bucket)

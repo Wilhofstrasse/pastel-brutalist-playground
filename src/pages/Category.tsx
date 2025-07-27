@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ListingCard } from '@/components/ListingCard';
 import { categories } from '@/data/categories';
-import { getListings } from '@/lib/supabase';
+import { getListings } from '@/lib/marketplace';
 import { ArrowLeft, Search } from 'lucide-react';
 import { useState } from 'react';
 
@@ -25,7 +25,7 @@ export const Category = () => {
   });
 
   // Filter listings by category and search query
-  const filteredListings = listingsData?.data?.filter(listing => {
+  const filteredListings = listingsData?.filter(listing => {
     const matchesCategory = !categoryId || listing.category_id === categoryId;
     const matchesSearch = !searchQuery || 
       listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -124,10 +124,10 @@ export const Category = () => {
                 key={listing.id}
                 id={listing.id}
                 title={listing.title}
-                price={`${listing.currency} ${listing.price.toLocaleString()}`}
-                location={listing.location}
-                imageUrl={listing.image_urls[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
-                category={listing.categories?.name_en || 'Uncategorized'}
+                price={`CHF ${listing.price?.toLocaleString() || '0'}`}
+                location={listing.location || 'Unbekannt'}
+                imageUrl={listing.images?.[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
+                category="Allgemein"
               />
             ))}
           </div>
