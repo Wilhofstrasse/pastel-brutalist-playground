@@ -29,6 +29,7 @@ type ListingFormData = z.infer<typeof listingSchema>;
 export const EditListing = () => {
   const { id } = useParams<{ id: string }>();
   const [images, setImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -40,6 +41,14 @@ export const EditListing = () => {
     queryKey: ['categories'],
     queryFn: () => getCategories(),
   });
+
+  useEffect(() => {
+    const urls = images.map(img => URL.createObjectURL(img));
+    setImagePreviews(urls);
+    return () => {
+      urls.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, [images]);
 
   const form = useForm<ListingFormData>({
     resolver: zodResolver(listingSchema),
@@ -185,7 +194,7 @@ export const EditListing = () => {
               Sie müssen angemeldet sein, um eine Anzeige zu bearbeiten.
             </p>
             <Link to="/login">
-              <Button>Anmelden</Button>
+              <Button>{t('auth.login')}</Button>
             </Link>
           </CardContent>
         </Card>
@@ -347,7 +356,7 @@ export const EditListing = () => {
                   {images.map((image, index) => (
                     <div key={`new-${index}`} className="relative group">
                       <img
-                        src={URL.createObjectURL(image)}
+                        src={imagePreviews[index]}
                         alt={`Upload ${index + 1}`}
                         className="w-full h-32 object-cover rounded-lg border"
                       />

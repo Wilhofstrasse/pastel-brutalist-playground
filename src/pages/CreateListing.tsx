@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -28,6 +28,7 @@ type ListingFormData = z.infer<typeof listingSchema>;
 
 export const CreateListing = () => {
   const [images, setImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -37,6 +38,14 @@ export const CreateListing = () => {
     queryKey: ['categories'],
     queryFn: () => getCategories(),
   });
+
+  useEffect(() => {
+    const urls = images.map(img => URL.createObjectURL(img));
+    setImagePreviews(urls);
+    return () => {
+      urls.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, [images]);
 
   const form = useForm<ListingFormData>({
     resolver: zodResolver(listingSchema),
@@ -130,7 +139,7 @@ export const CreateListing = () => {
               Sie müssen angemeldet sein, um eine Anzeige zu erstellen.
             </p>
             <Link to="/login">
-              <Button>Anmelden</Button>
+              <Button>{t('auth.login')}</Button>
             </Link>
           </CardContent>
         </Card>
@@ -261,7 +270,7 @@ export const CreateListing = () => {
                   {images.map((image, index) => (
                     <div key={index} className="relative group">
                       <img
-                        src={URL.createObjectURL(image)}
+                        src={imagePreviews[index]}
                         alt={`Upload ${index + 1}`}
                         className="w-full h-32 object-cover rounded-lg border"
                       />

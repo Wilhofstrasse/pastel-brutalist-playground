@@ -32,12 +32,12 @@ export const Footer = () => {
               </li>
               <li>
                 <Link to="/search" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Alle Anzeigen
+                  {t('common.listings')}
                 </Link>
               </li>
               <li>
                 <Link to="/create-listing" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Anzeige erstellen
+                  {t('profile.createListing')}
                 </Link>
               </li>
             </ul>

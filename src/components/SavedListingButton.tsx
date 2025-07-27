@@ -87,7 +87,7 @@ export const SavedListingButton = ({ listingId, className }: SavedListingButtonP
       onClick={handleToggleSave}
       disabled={isLoading}
       className={cn(
-        "h-8 w-8 hover:bg-background/80 transition-colors",
+        "h-11 w-11 hover:bg-background/80 transition-colors",
         className
       )}
     >

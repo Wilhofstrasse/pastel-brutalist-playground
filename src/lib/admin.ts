@@ -56,24 +56,9 @@ export const getAdminStats = async (): Promise<AdminStats> => {
 };
 
 export const getAllUsers = async (): Promise<AdminUser[]> => {
-  const { data: profiles, error: profilesError } = await supabase
-    .from('profiles')
-    .select(`
-      *,
-      user_roles (role)
-    `)
-    .order('created_at', { ascending: false });
-
-  if (profilesError) throw profilesError;
-
-  return profiles?.map(profile => ({
-    id: profile.user_id,
-    email: profile.user_id, // We'll need to get this from auth.users via edge function
-    full_name: profile.full_name,
-    phone: profile.phone,
-    created_at: profile.created_at,
-    role: (profile.user_roles as any)?.[0]?.role || 'user'
-  })) || [];
+  const { data, error } = await supabase.rpc('get_users_with_email');
+  if (error) throw error;
+  return (data as AdminUser[]) || [];
 };
 
 export const getAllListings = async (): Promise<AdminListing[]> => {

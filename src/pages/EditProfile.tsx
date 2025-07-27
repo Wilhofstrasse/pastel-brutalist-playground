@@ -29,6 +29,14 @@ export const EditProfile = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -67,6 +75,9 @@ export const EditProfile = () => {
     const file = e.target.files?.[0];
     if (file) {
       setProfileImage(file);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
     }
