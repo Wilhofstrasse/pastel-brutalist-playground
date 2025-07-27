@@ -4,8 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ListingCard } from '@/components/ListingCard';
-import { categories } from '@/data/categories';
-import { getListings } from '@/lib/marketplace';
+import { getListings, getCategories } from '@/lib/marketplace';
 import { ArrowLeft, Search } from 'lucide-react';
 import { useState } from 'react';
 
@@ -17,11 +16,16 @@ export const Category = () => {
 
   const currentLanguage = i18n.language.startsWith('de') ? 'de' : 'en';
   
-  const category = categories.find(cat => cat.id === categoryId);
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => getCategories(),
+  });
+
+  const category = categories?.find(cat => cat.id === categoryId);
   
   const { data: listingsData, isLoading } = useQuery({
     queryKey: ['listings', categoryId],
-    queryFn: () => getListings(),
+    queryFn: () => getListings(categoryId),
   });
 
   // Filter listings by category and search query
@@ -70,11 +74,11 @@ export const Category = () => {
           </Button>
           
           <h1 className="text-4xl font-bold text-foreground mb-4">
-            {category.name[currentLanguage]}
+            {category?.name || 'Kategorie'}
           </h1>
           
           <p className="text-xl text-muted-foreground">
-            Durchsuche alle Anzeigen in {category.name[currentLanguage]}
+            Durchsuche alle Anzeigen in {category?.name || 'dieser Kategorie'}
           </p>
         </div>
 
@@ -83,7 +87,7 @@ export const Category = () => {
           <form onSubmit={handleSearch} className="flex max-w-lg">
             <Input
               type="text"
-              placeholder={`Suchen in ${category.name[currentLanguage]}...`}
+              placeholder={`Suchen in ${category?.name || 'Kategorie'}...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="rounded-r-none border-r-0 bg-background focus:ring-2 focus:ring-primary/20 h-11"
@@ -137,8 +141,8 @@ export const Category = () => {
             <h3 className="text-2xl font-bold mb-2">{t('homepage.noListings')}</h3>
             <p className="text-muted-foreground mb-6">
               {searchQuery 
-                ? `Keine Anzeigen für "${searchQuery}" in ${category.name[currentLanguage]} gefunden`
-                : `Noch keine Anzeigen in ${category.name[currentLanguage]} verfügbar.`
+                ? `Keine Anzeigen für "${searchQuery}" in ${category?.name || 'dieser Kategorie'} gefunden`
+                : `Noch keine Anzeigen in ${category?.name || 'dieser Kategorie'} verfügbar.`
               }
             </p>
             <div className="space-x-4">

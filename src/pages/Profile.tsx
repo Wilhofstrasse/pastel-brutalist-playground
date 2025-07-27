@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ListingCard } from '@/components/ListingCard';
+import { ListingActions } from '@/components/ListingActions';
 import { useAuth } from '@/hooks/useAuth';
 import { getUserListings, getSavedListings, signOut } from '@/lib/marketplace';
 import { useQuery } from '@tanstack/react-query';
@@ -15,11 +16,13 @@ export const Profile = () => {
   const { user, loading } = useAuth();
   const { toast } = useToast();
 
-  const { data: userListingsData, isLoading: userListingsLoading } = useQuery({
+  const userListingsQuery = useQuery({
     queryKey: ['user-listings', user?.id],
     queryFn: () => getUserListings(user!.id),
     enabled: !!user?.id,
   });
+
+  const { data: userListingsData, isLoading: userListingsLoading } = userListingsQuery;
 
   const { data: savedListingsData, isLoading: savedListingsLoading } = useQuery({
     queryKey: ['saved-listings', user?.id],
@@ -148,15 +151,20 @@ export const Profile = () => {
             ) : userListings.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {userListings.map((listing) => (
-                  <ListingCard
-                    key={listing.id}
-                    id={listing.id}
-                    title={listing.title}
-                    price={`CHF ${listing.price?.toLocaleString() || '0'}`}
-                    location={listing.location || 'Unbekannt'}
-                    imageUrl={listing.images?.[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
-                    category="Allgemein"
-                  />
+                  <div key={listing.id} className="space-y-4">
+                    <ListingCard
+                      id={listing.id}
+                      title={listing.title}
+                      price={`CHF ${listing.price?.toLocaleString() || '0'}`}
+                      location={listing.location || 'Unbekannt'}
+                      imageUrl={listing.images?.[0] || 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'}
+                      category="Allgemein"
+                    />
+                    <ListingActions 
+                      listingId={listing.id} 
+                      onDelete={() => userListingsQuery.refetch()}
+                    />
+                  </div>
                 ))}
               </div>
             ) : (

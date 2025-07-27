@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { updateProfile, uploadImage } from '@/lib/marketplace';
+import { updateProfile, uploadImage, getProfile } from '@/lib/marketplace';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Upload, User } from 'lucide-react';
@@ -32,11 +32,36 @@ export const EditProfile = () => {
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      fullName: user?.user_metadata?.full_name || '',
-      phone: user?.user_metadata?.phone || '',
-      bio: user?.user_metadata?.bio || '',
+      fullName: '',
+      phone: '',
+      bio: '',
     },
   });
+
+  // Load profile data from database
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user) return;
+      
+      try {
+        const profile = await getProfile(user.id);
+        if (profile) {
+          form.reset({
+            fullName: profile.full_name || '',
+            phone: profile.phone || '',
+            bio: profile.bio || '',
+          });
+          if (profile.avatar_url) {
+            setPreviewUrl(profile.avatar_url);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      }
+    };
+
+    loadProfile();
+  }, [user, form]);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -52,7 +77,7 @@ export const EditProfile = () => {
 
     setLoading(true);
     try {
-      let avatarUrl = user.user_metadata?.avatar_url;
+      let avatarUrl = previewUrl;
 
       // Upload profile image if selected
       if (profileImage) {
@@ -105,9 +130,9 @@ export const EditProfile = () => {
                 <FormLabel>Profilbild</FormLabel>
                 <div className="flex items-center gap-4">
                   <div className="w-24 h-24 bg-background border-2 border-black shadow-brutalist rounded-sm flex items-center justify-center overflow-hidden">
-                    {previewUrl || user?.user_metadata?.avatar_url ? (
+                    {previewUrl ? (
                       <img
-                        src={previewUrl || user?.user_metadata?.avatar_url}
+                        src={previewUrl}
                         alt="Profile"
                         className="w-full h-full object-cover"
                       />
