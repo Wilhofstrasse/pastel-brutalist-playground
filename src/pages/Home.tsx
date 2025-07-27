@@ -78,7 +78,7 @@ export const Home = () => {
                 onClick={() => navigate(`/category/${category.id}`)}
                 className="h-auto p-4 flex flex-col items-center justify-center gap-3 min-h-[140px] max-w-full"
               >
-                <div className="text-3xl flex-shrink-0">📦</div>
+                <div className="text-3xl flex-shrink-0">{category.image_url || '📦'}</div>
                 <div className="flex flex-col items-center gap-1 w-full overflow-hidden">
                   <span className="text-sm font-bold leading-tight text-center line-clamp-2 break-words max-w-full">
                     {category.name}
