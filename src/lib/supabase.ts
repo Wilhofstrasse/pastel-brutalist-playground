@@ -348,12 +348,36 @@ export const unsaveListing = async (listingId: string) => {
 };
 
 export const getCategories = async () => {
-  if (!supabase) return { data: [], error: null };
+  if (!supabase) {
+    // Return the static categories from our data file as fallback
+    const { categories } = await import('@/data/categories');
+    return { 
+      data: categories.map(cat => ({
+        id: cat.id,
+        name: cat.name.en,
+        name_de: cat.name.de,
+        name_en: cat.name.en,
+        icon: cat.icon
+      })), 
+      error: null 
+    };
+  }
   try {
     const { data, error } = await supabase.from('categories').select('*').order('name');
     return { data: data || [], error };
   } catch (err) {
-    return { data: [], error: null };
+    // Fallback to static categories on error
+    const { categories } = await import('@/data/categories');
+    return { 
+      data: categories.map(cat => ({
+        id: cat.id,
+        name: cat.name.en,
+        name_de: cat.name.de,
+        name_en: cat.name.en,
+        icon: cat.icon
+      })), 
+      error: null 
+    };
   }
 };
 

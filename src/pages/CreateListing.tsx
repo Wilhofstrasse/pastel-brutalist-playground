@@ -193,13 +193,18 @@ export const CreateListing = () => {
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Price</FormLabel>
+                      <FormLabel>Price (CHF)</FormLabel>
                       <FormControl>
                         <Input 
                           type="number" 
-                          placeholder="0"
-                          {...field}
-                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          step="0.01"
+                          min="0"
+                          placeholder="0.00"
+                          value={field.value || ''}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            field.onChange(value === '' ? 0 : parseFloat(value));
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -237,7 +242,7 @@ export const CreateListing = () => {
                       <SelectContent>
                         {categories?.data?.map((category) => (
                           <SelectItem key={category.id} value={category.id}>
-                            {category.name_en}
+                            {category.name_de || category.name_en || category.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
