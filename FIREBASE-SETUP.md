@@ -1,21 +1,21 @@
-# Firebase Setup for Recife Real Estate (www.br-services.ch)
+# Firebase Setup for Recife Real Estate (www.brservices.ch)
 
 **Last Updated:** 2025-10-21
-**Domain:** www.br-services.ch
+**Domain:** www.brservices.ch
 **Contact:** +41 79 917 21 19 | sombrasil01@bluewin.ch
 
 ---
 
 ## ⚠️ CRITICAL: Add Authorized Domain to Firebase
 
-**BEFORE deploying to www.br-services.ch, you MUST add the domain to Firebase:**
+**BEFORE deploying to www.brservices.ch, you MUST add the domain to Firebase:**
 
 1. Go to [Firebase Console](https://console.firebase.google.com/)
 2. Select project: **real-estate-recife**
 3. Go to **Authentication** > **Settings** > **Authorized domains**
 4. Click **Add domain**
-5. Enter: `br-services.ch`
-6. Also add: `www.br-services.ch`
+5. Enter: `brservices.ch`
+6. Also add: `www.brservices.ch`
 7. Click **Add**
 
 **Without this step, authentication will fail on your live website!**
@@ -26,7 +26,7 @@
 
 ### ✅ Configuration Complete
 - [x] Business name: **Recife Real Estate**
-- [x] Domain: **www.br-services.ch**
+- [x] Domain: **www.brservices.ch**
 - [x] WhatsApp: **+41 79 917 21 19** (Swiss number)
 - [x] Email: **sombrasil01@bluewin.ch**
 - [x] Instagram: **@brasil_reisen_abel_andrade**
@@ -38,8 +38,8 @@
 ### 🔥 Firebase Setup Required
 
 #### 1. Add Authorized Domains
-- [ ] Add `br-services.ch` to Firebase authorized domains
-- [ ] Add `www.br-services.ch` to Firebase authorized domains
+- [ ] Add `brservices.ch` to Firebase authorized domains
+- [ ] Add `www.brservices.ch` to Firebase authorized domains
 
 #### 2. Verify Services are Enabled
 - [ ] Authentication > Email/Password is enabled
@@ -108,7 +108,7 @@ service firebase.storage {
 
 ---
 
-## Deployment to www.br-services.ch
+## Deployment to www.brservices.ch
 
 ### Upload Files via cPanel
 
@@ -118,7 +118,7 @@ service firebase.storage {
    - Password: (your hosting password)
 
 2. **Navigate to File Manager**
-   - Go to `/public_html/br-services.ch/` or `/public_html/`
+   - Go to `/public_html/brservices.ch/` or `/public_html/`
    - Delete any old files if exists
 
 3. **Upload Project Files**
@@ -152,7 +152,7 @@ service firebase.storage {
 ## Testing After Deployment
 
 ### Test Homepage
-1. Visit: `https://www.br-services.ch`
+1. Visit: `https://www.brservices.ch`
 2. Check:
    - [ ] Logo loads correctly
    - [ ] Language switcher works (PT, DE, EN)
@@ -164,7 +164,7 @@ service firebase.storage {
    - [ ] Mobile responsive design works
 
 ### Test Admin Panel
-1. Visit: `https://www.br-services.ch/admin.html`
+1. Visit: `https://www.brservices.ch/admin.html`
 2. Check:
    - [ ] Login page loads correctly
    - [ ] Can login with admin credentials
@@ -186,7 +186,7 @@ service firebase.storage {
 ## Common Issues & Solutions
 
 ### Issue: "Authentication domain not whitelisted"
-**Solution:** Add `br-services.ch` to Firebase authorized domains (see top of this document)
+**Solution:** Add `brservices.ch` to Firebase authorized domains (see top of this document)
 
 ### Issue: Properties not loading
 **Solution:**
@@ -237,7 +237,7 @@ service firebase.storage {
 ## Support Contacts
 
 **Firebase Project:** real-estate-recife
-**Domain:** www.br-services.ch
+**Domain:** www.brservices.ch
 **Business Contact:** +41 79 917 21 19
 **Email:** sombrasil01@bluewin.ch
 
@@ -262,4 +262,4 @@ service firebase.storage {
 
 **Your Recife Real Estate platform is ready for deployment! 🎉**
 
-Just follow the checklist above, and you'll be live on www.br-services.ch
+Just follow the checklist above, and you'll be live on www.brservices.ch

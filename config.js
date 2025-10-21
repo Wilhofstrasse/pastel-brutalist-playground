@@ -2,7 +2,7 @@
 // RECIFE REAL ESTATE - SALES PLATFORM CONFIGURATION
 // =======================================================================================
 //
-// Published at: www.br-services.ch
+// Published at: www.brservices.ch
 // Last updated: 2025-10-21
 //
 // =======================================================================================
@@ -12,7 +12,7 @@ const SITE_CONFIG = {
     business: {
         name: "Recife Real Estate",
         fullName: "Recife Real Estate",
-        domain: "www.br-services.ch",
+        domain: "www.brservices.ch",
         slogan: {
             pt: "Terrenos Premium em Recife",
             de: "Premium-Grundstücke in Recife",
@@ -82,7 +82,7 @@ const SITE_CONFIG = {
         },
         keywords: "terrenos, recife, imóveis, real estate, investimento, Recife Real Estate, Brasil",
         ogImage: "./assets/logo.png",
-        siteUrl: "https://www.br-services.ch"
+        siteUrl: "https://www.brservices.ch"
     },
 
     // =================== FIREBASE CONFIGURATION ===================
