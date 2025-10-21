@@ -1,0 +1,20 @@
+# Documentation
+README.md
+SETUP-GUIDE.md
+PROJECT-ANALYSIS.md
+DEPLOY.md
+FIREBASE-SETUP.md
+
+# Git
+.git
+.gitignore
+
+# Node modules (if any)
+node_modules
+package.json
+package-lock.json
+
+# Development files
+.vscode
+.idea
+*.log
