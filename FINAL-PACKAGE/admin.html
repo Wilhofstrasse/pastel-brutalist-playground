@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Real Estate Property</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/admin.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-container">
+            <img src="./assets/logo.png" alt="Real Estate Property" class="login-logo">
+            <h1>Admin Panel</h1>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+                <div id="login-error" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="admin-dashboard" style="display: none;">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <img src="./assets/logo.png" alt="Real Estate Property" class="header-logo">
+                <h1>Admin Panel</h1>
+            </div>
+            <div class="header-right">
+                <span id="admin-email" class="admin-email"></span>
+                <button onclick="logout()" class="btn-secondary">Logout</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <button onclick="showAddPropertyModal()" class="btn-primary">
+                    <span class="icon">+</span> Add New Property
+                </button>
+                <button onclick="manageAdmins()" class="btn-secondary">
+                    <span class="icon">👥</span> Manage Admins
+                </button>
+            </div>
+
+            <!-- Properties List -->
+            <div class="properties-list" id="properties-list">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading properties...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Property Modal -->
+    <div id="property-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add New Property</h2>
+                <button onclick="closePropertyModal()" class="close-btn">&times;</button>
+            </div>
+            <form id="property-form">
+                <input type="hidden" id="property-id">
+                
+                <div class="form-tabs">
+                    <button type="button" class="tab-btn active" onclick="switchTab('pt')">🇧🇷 Portuguese</button>
+                    <button type="button" class="tab-btn" onclick="switchTab('de')">🇩🇪 Deutsch</button>
+                    <button type="button" class="tab-btn" onclick="switchTab('en')">🇬🇧 English</button>
+                </div>
+
+                <!-- Portuguese Tab -->
+                <div id="tab-pt" class="tab-content active">
+                    <div class="form-group">
+                        <label for="title_pt">Title (Portuguese) *</label>
+                        <input type="text" id="title_pt" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description_pt">Description (Portuguese)</label>
+                        <textarea id="description_pt" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- German Tab -->
+                <div id="tab-de" class="tab-content">
+                    <div class="form-group">
+                        <label for="title_de">Title (German)</label>
+                        <input type="text" id="title_de">
+                    </div>
+                    <div class="form-group">
+                        <label for="description_de">Description (German)</label>
+                        <textarea id="description_de" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- English Tab -->
+                <div id="tab-en" class="tab-content">
+                    <div class="form-group">
+                        <label for="title_en">Title (English)</label>
+                        <input type="text" id="title_en">
+                    </div>
+                    <div class="form-group">
+                        <label for="description_en">Description (English)</label>
+                        <textarea id="description_en" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- Common Fields -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="price">Price (R$) *</label>
+                        <input type="number" id="price" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="size_m2">Size (m²) *</label>
+                        <input type="number" id="size_m2" required min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="location">Location *</label>
+                        <input type="text" id="location" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="type">Type *</label>
+                        <select id="type" required>
+                            <option value="">Select...</option>
+                            <option value="Residential">Residential</option>
+                            <option value="Commercial">Commercial</option>
+                            <option value="Mixed">Mixed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="documentation">Documentation</label>
+                        <select id="documentation">
+                            <option value="">Select...</option>
+                            <option value="Registered">Registered</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="position">Position</label>
+                        <select id="position">
+                            <option value="">Select...</option>
+                            <option value="Corner">Corner</option>
+                            <option value="Front">Front</option>
+                            <option value="Middle">Middle</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="infrastructure">Infrastructure</label>
+                    <select id="infrastructure">
+                        <option value="">Select...</option>
+                        <option value="Complete">Complete</option>
+                        <option value="Partial">Partial</option>
+                        <option value="None">None</option>
+                    </select>
+                </div>
+
+                <!-- Video Section -->
+                <div class="form-section">
+                    <h3>Video</h3>
+                    <div class="form-group">
+                        <label>Video Type *</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="videoType" value="youtube" checked onclick="toggleVideoInputs()">
+                                YouTube Link
+                            </label>
+                            <label>
+                                <input type="radio" name="videoType" value="upload" onclick="toggleVideoInputs()">
+                                Upload Video
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="youtube-input" class="form-group">
+                        <label for="youtubeUrl">YouTube URL</label>
+                        <input type="url" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=...">
+                        <small>Paste the full YouTube video URL</small>
+                    </div>
+
+                    <div id="upload-input" class="form-group" style="display: none;">
+                        <label for="videoFile">Upload Video File</label>
+                        <input type="file" id="videoFile" accept="video/*">
+                        <small>Max size: 100MB</small>
+                        <div id="upload-progress" class="upload-progress" style="display: none;">
+                            <div class="progress-bar">
+                                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                            </div>
+                            <span id="progress-text">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status *</label>
+                    <select id="status" required>
+                        <option value="active">Active</option>
+                        <option value="sold">Sold</option>
+                        <option value="reserved">Reserved</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" onclick="closePropertyModal()" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary" id="save-btn">Save Property</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Management Modal -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Manage Admins</h2>
+                <button onclick="closeAdminModal()" class="close-btn">&times;</button>
+            </div>
+            <div class="admin-list">
+                <h3>Current Admins</h3>
+                <div id="admins-list"></div>
+            </div>
+            <div class="add-admin-section">
+                <h3>Add New Admin</h3>
+                <form id="add-admin-form">
+                    <div class="form-group">
+                        <label for="new-admin-email">Email</label>
+                        <input type="email" id="new-admin-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-admin-password">Temporary Password</label>
+                        <input type="password" id="new-admin-password" required minlength="6">
+                        <small>The admin will be able to change this later</small>
+                    </div>
+                    <button type="submit" class="btn-primary">Add Admin</button>
+                    <div id="admin-error" class="error-message"></div>
+                    <div id="admin-success" class="success-message"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    
+    <!-- ALL JAVASCRIPT INLINE -->
+    <script>
+        // ===== FIREBASE CONFIGURATION =====
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeg-p2HMp2YHwSXg_ulDxBkHmb6h-2ahU",
+            authDomain: "real-estate-recife.firebaseapp.com",
+            projectId: "real-estate-recife",
+            storageBucket: "real-estate-recife.firebasestorage.app",
+            messagingSenderId: "1089048916325",
+            appId: "1:1089048916325:web:db0fc9fae9d69b58bff18c"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps || !firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        
+        let currentUser = null;
+        let editingPropertyId = null;
+
+        // ===== AUTHENTICATION =====
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-dashboard').style.display = 'block';
+                document.getElementById('admin-email').textContent = user.email;
+                loadAdminProperties();
+            } else {
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('admin-dashboard').style.display = 'none';
+            }
+        });
+
+        // Login
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('login-error');
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                errorDiv.textContent = '';
+            } catch (error) {
+                console.error('Login error:', error);
+                errorDiv.textContent = 'Login failed: ' + error.message;
+            }
+        });
+
+        // Logout
+        function logout() {
+            auth.signOut();
+        }
+
+        // ===== PROPERTIES MANAGEMENT =====
+        async function loadAdminProperties() {
+            const listContainer = document.getElementById('properties-list');
+            
+            try {
+                listContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading properties...</p></div>';
+                
+                const snapshot = await db.collection('properties')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+                
+                if (snapshot.empty) {
+                    listContainer.innerHTML = '<p style="text-align: center; color: #666;">No properties yet. Click "Add New Property" to get started.</p>';
+                    return;
+                }
+                
+                listContainer.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const property = doc.data();
+                    property.id = doc.id;
+                    listContainer.innerHTML += createAdminPropertyCard(property);
+                });
+                
+            } catch (error) {
+                console.error('Error loading properties:', error);
+                listContainer.innerHTML = '<p style="text-align: center; color: red;">Error loading properties. Please refresh the page.</p>';
+            }
+        }
+
+        function createAdminPropertyCard(property) {
+            let videoHTML = '';
+            if (property.videoType === 'youtube' && property.youtubeUrl) {
+                let videoId = '';
+                if (property.youtubeUrl.includes('youtube.com/watch?v=')) {
+                    videoId = property.youtubeUrl.split('v=')[1].split('&')[0];
+                } else if (property.youtubeUrl.includes('youtu.be/')) {
+                    videoId = property.youtubeUrl.split('youtu.be/')[1].split('?')[0];
+                }
+                videoHTML = `<iframe src="https://www.youtube.com/embed/${videoId}"></iframe>`;
+            } else if (property.videoType === 'upload' && property.videoUrl) {
+                videoHTML = `<video controls><source src="${property.videoUrl}" type="video/mp4"></video>`;
+            }
+            
+            return `
+                <div class="property-item">
+                    <div class="property-video">
+                        ${videoHTML || '<div style="background: #ddd; height: 100%;"></div>'}
+                    </div>
+                    <div class="property-info">
+                        <h3>${property.title_pt || property.title_en || property.title_de || 'Untitled'}</h3>
+                        <div class="property-details">
+                            <div class="property-detail">
+                                <strong>Size</strong>
+                                <span>${property.size_m2} m²</span>
+                            </div>
+                            <div class="property-detail">
+                                <strong>Location</strong>
+                                <span>${property.location}</span>
+                            </div>
+                            <div class="property-detail">
+                                <strong>Price</strong>
+                                <span>R$ ${property.price.toLocaleString()}</span>
+                            </div>
+                            <div class="property-detail">
+                                <strong>Type</strong>
+                                <span>${property.type}</span>
+                            </div>
+                        </div>
+                        <span class="property-status status-${property.status}">${property.status}</span>
+                    </div>
+                    <div class="property-actions">
+                        <button class="btn-edit" onclick="editProperty('${property.id}')">Edit</button>
+                        <button class="btn-delete" onclick="deleteProperty('${property.id}', '${property.title_pt}')">Delete</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showAddPropertyModal() {
+            editingPropertyId = null;
+            document.getElementById('modal-title').textContent = 'Add New Property';
+            document.getElementById('property-form').reset();
+            document.getElementById('property-id').value = '';
+            document.querySelector('input[name="videoType"][value="youtube"]').checked = true;
+            toggleVideoInputs();
+            document.getElementById('property-modal').classList.add('active');
+        }
+
+        function closePropertyModal() {
+            document.getElementById('property-modal').classList.remove('active');
+            editingPropertyId = null;
+        }
+
+        function switchTab(lang) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`tab-${lang}`).classList.add('active');
+        }
+
+        function toggleVideoInputs() {
+            const videoType = document.querySelector('input[name="videoType"]:checked').value;
+            const youtubeInput = document.getElementById('youtube-input');
+            const uploadInput = document.getElementById('upload-input');
+            
+            if (videoType === 'youtube') {
+                youtubeInput.style.display = 'block';
+                uploadInput.style.display = 'none';
+                document.getElementById('youtubeUrl').required = true;
+                document.getElementById('videoFile').required = false;
+            } else {
+                youtubeInput.style.display = 'none';
+                uploadInput.style.display = 'block';
+                document.getElementById('youtubeUrl').required = false;
+                document.getElementById('videoFile').required = !editingPropertyId;
+            }
+        }
+
+        document.getElementById('property-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+            
+            try {
+                const propertyData = {
+                    title_pt: document.getElementById('title_pt').value,
+                    title_de: document.getElementById('title_de').value,
+                    title_en: document.getElementById('title_en').value,
+                    description_pt: document.getElementById('description_pt').value || '',
+                    description_de: document.getElementById('description_de').value || '',
+                    description_en: document.getElementById('description_en').value || '',
+                    price: parseFloat(document.getElementById('price').value),
+                    size_m2: parseFloat(document.getElementById('size_m2').value),
+                    location: document.getElementById('location').value,
+                    type: document.getElementById('type').value,
+                    documentation: document.getElementById('documentation').value || null,
+                    position: document.getElementById('position').value || null,
+                    infrastructure: document.getElementById('infrastructure').value || null,
+                    status: document.getElementById('status').value,
+                    videoType: document.querySelector('input[name="videoType"]:checked').value
+                };
+
+                if (propertyData.videoType === 'youtube') {
+                    propertyData.youtubeUrl = document.getElementById('youtubeUrl').value;
+                } else {
+                    const videoFile = document.getElementById('videoFile').files[0];
+                    if (videoFile) {
+                        propertyData.videoUrl = await uploadVideo(videoFile);
+                    } else if (!editingPropertyId) {
+                        throw new Error('Please select a video file');
+                    }
+                }
+                
+                if (editingPropertyId) {
+                    await db.collection('properties').doc(editingPropertyId).update(propertyData);
+                } else {
+                    propertyData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('properties').add(propertyData);
+                }
+                
+                closePropertyModal();
+                loadAdminProperties();
+                alert('Property saved successfully!');
+                
+            } catch (error) {
+                console.error('Error saving property:', error);
+                alert('Error saving property: ' + error.message);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Property';
+            }
+        });
+
+        async function uploadVideo(file) {
+            return new Promise((resolve, reject) => {
+                const storageRef = storage.ref();
+                const videoRef = storageRef.child(`videos/${Date.now()}_${file.name}`);
+                const uploadTask = videoRef.put(file);
+                
+                const progressDiv = document.getElementById('upload-progress');
+                const progressBar = document.getElementById('progress-bar-fill');
+                const progressText = document.getElementById('progress-text');
+                progressDiv.style.display = 'block';
+                
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        progressBar.style.width = progress + '%';
+                        progressText.textContent = Math.round(progress) + '%';
+                    },
+                    (error) => {
+                        progressDiv.style.display = 'none';
+                        reject(error);
+                    },
+                    async () => {
+                        const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                        progressDiv.style.display = 'none';
+                        resolve(downloadURL);
+                    }
+                );
+            });
+        }
+
+        async function editProperty(propertyId) {
+            editingPropertyId = propertyId;
+            document.getElementById('modal-title').textContent = 'Edit Property';
+            
+            try {
+                const doc = await db.collection('properties').doc(propertyId).get();
+                const property = doc.data();
+                
+                document.getElementById('property-id').value = propertyId;
+                document.getElementById('title_pt').value = property.title_pt || '';
+                document.getElementById('title_de').value = property.title_de || '';
+                document.getElementById('title_en').value = property.title_en || '';
+                document.getElementById('description_pt').value = property.description_pt || '';
+                document.getElementById('description_de').value = property.description_de || '';
+                document.getElementById('description_en').value = property.description_en || '';
+                document.getElementById('price').value = property.price || '';
+                document.getElementById('size_m2').value = property.size_m2 || '';
+                document.getElementById('location').value = property.location || '';
+                document.getElementById('type').value = property.type || '';
+                document.getElementById('documentation').value = property.documentation || '';
+                document.getElementById('position').value = property.position || '';
+                document.getElementById('infrastructure').value = property.infrastructure || '';
+                document.getElementById('status').value = property.status || 'active';
+                
+                if (property.videoType === 'youtube') {
+                    document.querySelector('input[name="videoType"][value="youtube"]').checked = true;
+                    document.getElementById('youtubeUrl').value = property.youtubeUrl || '';
+                } else {
+                    document.querySelector('input[name="videoType"][value="upload"]').checked = true;
+                }
+                toggleVideoInputs();
+                
+                document.getElementById('property-modal').classList.add('active');
+            } catch (error) {
+                console.error('Error loading property:', error);
+                alert('Error loading property data');
+            }
+        }
+
+        async function deleteProperty(propertyId, title) {
+            if (confirm(`Are you sure you want to delete "${title}"?`)) {
+                try {
+                    await db.collection('properties').doc(propertyId).delete();
+                    loadAdminProperties();
+                    alert('Property deleted successfully!');
+                } catch (error) {
+                    console.error('Error deleting property:', error);
+                    alert('Error deleting property');
+                }
+            }
+        }
+
+        // ===== ADMIN MANAGEMENT =====
+        function manageAdmins() {
+            loadAdminsList();
+            document.getElementById('admin-modal').classList.add('active');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.remove('active');
+        }
+
+        async function loadAdminsList() {
+            const adminsList = document.getElementById('admins-list');
+            
+            try {
+                const snapshot = await db.collection('admins').get();
+                
+                if (snapshot.empty) {
+                    adminsList.innerHTML = '<p>No admins found</p>';
+                    return;
+                }
+                
+                adminsList.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const admin = doc.data();
+                    adminsList.innerHTML += `
+                        <div class="admin-item">
+                            <span>${admin.email}</span>
+                            ${admin.email !== currentUser.email ? 
+                                `<button class="btn-delete" onclick="removeAdmin('${doc.id}', '${admin.email}')">Remove</button>` : 
+                                '<span style="color: #666; font-size: 0.85rem;">(You)</span>'}
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading admins:', error);
+                adminsList.innerHTML = '<p style="color: red;">Error loading admins</p>';
+            }
+        }
+
+        document.getElementById('add-admin-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('new-admin-email').value;
+            const password = document.getElementById('new-admin-password').value;
+            const errorDiv = document.getElementById('admin-error');
+            const successDiv = document.getElementById('admin-success');
+            
+            errorDiv.textContent = '';
+            successDiv.textContent = '';
+            
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                await db.collection('admins').doc(userCredential.user.uid).set({
+                    email: email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdBy: currentUser.email
+                });
+                
+                successDiv.textContent = 'Admin added successfully!';
+                document.getElementById('add-admin-form').reset();
+                loadAdminsList();
+            } catch (error) {
+                console.error('Error adding admin:', error);
+                errorDiv.textContent = error.message;
+            }
+        });
+
+        async function removeAdmin(adminId, email) {
+            if (confirm(`Remove admin access for ${email}?`)) {
+                try {
+                    await db.collection('admins').doc(adminId).delete();
+                    alert('Admin removed successfully!');
+                    loadAdminsList();
+                } catch (error) {
+                    console.error('Error removing admin:', error);
+                    alert('Error removing admin');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
