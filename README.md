@@ -1,73 +1,147 @@
-# Welcome to your Lovable project
+# BR Services - Real Estate Website
 
-## Project info
+A multilingual real estate website for BR Services, built with Firebase and vanilla JavaScript.
 
-**URL**: https://lovable.dev/projects/faf0defa-bc55-447d-85cc-fa9248cdfa11
+## Live Website
 
-## How can I edit this code?
+**Homepage:** https://brservices.ch
+**Admin Panel:** https://brservices.ch/admin.html
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+- Multi-language support (Portuguese, German, English)
+- Property listing and management
+- Admin panel for CRUD operations
+- Firebase Authentication, Firestore & Storage integration
+- Responsive design
+- Contact forms and WhatsApp integration
+- Image upload and management
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/faf0defa-bc55-447d-85cc-fa9248cdfa11) and start prompting.
+## Tech Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript
+- **Backend:** Firebase (Authentication, Firestore, Storage)
+- **Languages:** Portuguese (PT), German (DE), English (EN)
 
-**Use your preferred IDE**
+## Project Structure
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+.
+├── index.html              # Homepage with property listings
+├── admin.html              # Admin panel for property management
+├── css/
+│   ├── styles.css         # Homepage styles
+│   └── admin.css          # Admin panel styles
+├── js/
+│   ├── main.js            # Homepage logic
+│   └── translations.js    # Multi-language translations
+├── assets/
+│   └── logo.png           # Company logo
+├── DEPLOY.md              # Deployment instructions
+└── README.md              # This file
 ```
 
-**Edit a file directly in GitHub**
+## Getting Started
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Local Development
 
-**Use GitHub Codespaces**
+1. Clone this repository:
+```bash
+git clone https://github.com/Wilhofstrasse/pastel-brutalist-playground.git
+cd pastel-brutalist-playground
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+2. Open the files in your browser:
+   - Open `index.html` in a web browser for the homepage
+   - Open `admin.html` for the admin panel
 
-## What technologies are used for this project?
+3. For live development, use a local server:
+```bash
+# Using Python
+python -m http.server 8000
 
-This project is built with:
+# Using Node.js
+npx http-server
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+# Using PHP
+php -S localhost:8000
+```
 
-## How can I deploy this project?
+## Firebase Configuration
 
-Simply open [Lovable](https://lovable.dev/projects/faf0defa-bc55-447d-85cc-fa9248cdfa11) and click on Share -> Publish.
+The project uses Firebase with inline configuration in both HTML files:
 
-## Can I connect a custom domain to my Lovable project?
+**Project:** real-estate-recife
+**API Key:** AIzaSyCeg-p2HMp2YHwSXg_ulDxBkHmb6h-2ahU
+**Auth Domain:** real-estate-recife.firebaseapp.com
+**Project ID:** real-estate-recife
 
-Yes, you can!
+**Authorized Domain:** brservices.ch
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+**Services Enabled:**
+- Authentication (Email/Password)
+- Firestore Database
+- Storage
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## Admin Credentials
+
+**Email:** us@filipeandrade.com
+**Password:** Abel1234
+
+## Deployment
+
+See [DEPLOY.md](DEPLOY.md) for detailed deployment instructions to cPanel/shared hosting.
+
+### Quick Deployment Steps:
+
+1. Upload all files to your web server's public directory
+2. Ensure Firebase configuration is correct
+3. Clear browser cache
+4. Test homepage and admin panel
+
+## Configuration
+
+### WhatsApp Number
+
+Update the WhatsApp number in `index.html` (search for the phone number in the contact section)
+
+### Social Media Links
+
+Update social media links in the footer section of `index.html`
+
+### Languages
+
+Edit translations in `js/translations.js` to add or modify language content
+
+## Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Troubleshooting
+
+If you encounter issues:
+
+1. Clear browser cache (Ctrl+Shift+Delete)
+2. Try incognito/private browsing mode
+3. Check browser console (F12) for errors
+4. Verify all files uploaded correctly
+5. Ensure Firebase configuration is valid
+
+## Contributing
+
+This is a private project. For any changes or improvements, please contact the project owner.
+
+## License
+
+Private - All rights reserved
+
+## Contact
+
+For support or questions, contact: us@filipeandrade.com
+
+---
+
+Built with care for BR Services Real Estate
