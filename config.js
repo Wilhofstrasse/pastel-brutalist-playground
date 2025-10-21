@@ -1,16 +1,18 @@
 // =======================================================================================
-// BR SERVICES - REAL ESTATE SALES PLATFORM CONFIGURATION
+// RECIFE REAL ESTATE - SALES PLATFORM CONFIGURATION
 // =======================================================================================
 //
-// IMPORTANT: Update these values with your real business information before deployment
+// Published at: www.br-services.ch
+// Last updated: 2025-10-21
 //
 // =======================================================================================
 
 const SITE_CONFIG = {
     // =================== BUSINESS INFORMATION ===================
     business: {
-        name: "BR Services",
-        fullName: "BR Services Real Estate",
+        name: "Recife Real Estate",
+        fullName: "Recife Real Estate",
+        domain: "www.br-services.ch",
         slogan: {
             pt: "Terrenos Premium em Recife",
             de: "Premium-Grundstücke in Recife",
@@ -24,22 +26,21 @@ const SITE_CONFIG = {
     },
 
     // =================== CONTACT INFORMATION ===================
-    // TODO: Update with real contact information
     contact: {
         // WhatsApp number in international format (without + or spaces)
-        // Example: "5581999999999" for +55 81 99999-9999
-        whatsapp: "5581999999999",  // ⚠️ UPDATE THIS
+        // Swiss number: +41 79 917 21 19
+        whatsapp: "41799172119",
 
         // WhatsApp number formatted for display
-        whatsappDisplay: "+55 (81) 9 9999-9999",  // ⚠️ UPDATE THIS
+        whatsappDisplay: "+41 79 917 21 19",
 
         // Business email
-        email: "us@filipeandrade.com",  // ⚠️ UPDATE THIS
+        email: "sombrasil01@bluewin.ch",
 
-        // Office phone (optional)
-        phone: "",
+        // Office phone (same as WhatsApp)
+        phone: "+41 79 917 21 19",
 
-        // Business address (optional)
+        // Business address
         address: {
             street: "",
             city: "Recife",
@@ -50,38 +51,38 @@ const SITE_CONFIG = {
     },
 
     // =================== SOCIAL MEDIA ===================
-    // TODO: Add your real social media profiles or remove if not using
     social: {
-        // Full URL to your Instagram profile
-        instagram: "https://instagram.com/brservices",  // ⚠️ UPDATE THIS
+        // Instagram profile
+        instagram: "https://instagram.com/brasil_reisen_abel_andrade",
 
-        // Full URL to your Facebook profile/page
-        facebook: "https://facebook.com/brservices",  // ⚠️ UPDATE THIS
+        // Facebook profile
+        facebook: "https://facebook.com/brasil_reisen_abel_andrade",
 
-        // Full URL to your LinkedIn profile/page (optional)
+        // LinkedIn profile (optional)
         linkedin: "",
 
-        // Full URL to your YouTube channel (optional)
+        // YouTube channel (optional)
         youtube: "",
 
-        // Full URL to your Twitter/X profile (optional)
+        // Twitter/X profile (optional)
         twitter: ""
     },
 
     // =================== SEO & META TAGS ===================
     seo: {
         title: {
-            pt: "BR Services - Terrenos Premium em Recife",
-            de: "BR Services - Premium-Grundstücke in Recife",
-            en: "BR Services - Premium Land in Recife"
+            pt: "Recife Real Estate - Terrenos Premium em Recife",
+            de: "Recife Real Estate - Premium-Grundstücke in Recife",
+            en: "Recife Real Estate - Premium Land in Recife"
         },
         description: {
             pt: "Terrenos premium em Recife - Investimentos exclusivos em localização privilegiada",
             de: "Premium-Grundstücke in Recife - Exklusive Investitionen in privilegierter Lage",
             en: "Premium land in Recife - Exclusive investments in privileged location"
         },
-        keywords: "terrenos, recife, imóveis, real estate, investimento, BR Services",
-        ogImage: "./assets/logo.png"
+        keywords: "terrenos, recife, imóveis, real estate, investimento, Recife Real Estate, Brasil",
+        ogImage: "./assets/logo.png",
+        siteUrl: "https://www.br-services.ch"
     },
 
     // =================== FIREBASE CONFIGURATION ===================

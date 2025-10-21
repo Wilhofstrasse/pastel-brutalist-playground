@@ -74,8 +74,9 @@ function createPropertyCard(property) {
                     ` : ''}
                 </div>
                 <p class="price">${formatPrice(property.price)}</p>
-                <a href="https://wa.me/5581999999999?text=${encodeURIComponent(`Olá! Tenho interesse no terreno: ${title}`)}" 
-                   target="_blank" 
+                <a href="https://wa.me/41799172119?text=${encodeURIComponent(`Olá! Tenho interesse no terreno: ${title}`)}"
+                   target="_blank"
+                   rel="noopener noreferrer"
                    class="property-button">${t('schedule-visit')}</a>
             </div>
         </div>
